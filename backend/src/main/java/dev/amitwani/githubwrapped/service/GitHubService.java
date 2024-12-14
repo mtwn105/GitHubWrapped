@@ -1,5 +1,6 @@
 package dev.amitwani.githubwrapped.service;
 
+import dev.amitwani.githubwrapped.dto.graphql.GitHubContributionStats;
 import dev.amitwani.githubwrapped.dto.graphql.GitHubPinnedItems;
 import dev.amitwani.githubwrapped.dto.graphql.GraphQLRequest;
 import jakarta.annotation.PostConstruct;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class GitHubService {
@@ -94,6 +97,158 @@ public class GitHubService {
 
 
         return response.getBody();
+    }
+
+    public List<GitHubContributionStats.RepositoryNode> getContributionStats(String username) {
+
+        String graphqlQuery = """
+                    query {
+                       user(login: "%s") {
+                         repositories(first: 100, isFork: false) {
+                           edges {
+                             node {
+                               name
+                               stars: stargazerCount
+                               forkCount
+                               primaryLanguage {
+                                   name
+                                   color
+                                 }
+                               commits: defaultBranchRef {
+                                 target {
+                                   ... on Commit {
+                                     history(since: "2024-01-01T00:00:00Z", until: "2024-12-31T23:59:59Z") {
+                                       totalCount
+                                     }
+                                   }
+                                 }
+                               }
+                               languages(first: 100, orderBy: {field: SIZE, direction: DESC}) {
+                                 edges {
+                                   node {
+                                     name
+                                     color
+                                   }
+                                   size
+                                 }
+                               }
+                               issues(states: CLOSED, filterBy:{since: "2024-01-01T00:00:00Z"}) {
+                                 totalCount
+                               }
+                               pullRequests(states: CLOSED) {
+                                 totalCount
+                               }
+                             }
+                           }
+                           pageInfo {
+                             hasNextPage
+                             endCursor
+                           }
+                         }
+                       }
+                     }
+                """.formatted(username);
+
+        GraphQLRequest request = new GraphQLRequest(graphqlQuery);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.set("Content-Type", "application/json");
+
+        HttpEntity<GraphQLRequest> entity = new HttpEntity<>(request, headers);
+
+        ResponseEntity<GitHubContributionStats> response = restTemplate.exchange(
+                graphqlUrl,
+                HttpMethod.POST,
+                entity,
+                GitHubContributionStats.class
+        );
+
+        LOGGER.info("Response: {} {}", response.getStatusCode(), response.getBody());
+
+
+        GitHubContributionStats contributionStats = response.getBody();
+
+        if (contributionStats == null) {
+            return null;
+        }
+
+        List<GitHubContributionStats.RepositoryNode> allRepositories = new ArrayList<>(contributionStats.getData().getUser().getRepositories().getEdges().stream().map(GitHubContributionStats.RepositoryEdge::getNode).toList());
+
+        // Handle pagination
+        while (contributionStats.getData().getUser().getRepositories().getPageInfo().isHasNextPage()) {
+            String cursor = contributionStats.getData().getUser().getRepositories().getPageInfo().getEndCursor();
+            graphqlQuery = """
+                        query {
+                           user(login: "%s") {
+                             repositories(first: 100, after: "%s", isFork: false) {
+                               edges {
+                                 node {
+                                   name
+                                   stars: stargazerCount
+                                   forkCount
+                                    primaryLanguage {
+                                       name
+                                       color
+                                     }
+                                   commits: defaultBranchRef {
+                                     target {
+                                       ... on Commit {
+                                         history(since: "2024-01-01T00:00:00Z", until: "2024-12-31T23:59:59Z") {
+                                           totalCount
+                                         }
+                                       }
+                                     }
+                                   }
+                                   languages(first: 100, orderBy: {field: SIZE, direction: DESC}) {
+                                     edges {
+                                       node {
+                                         name
+                                         color
+                                       }
+                                       size
+                                     }
+                                   }
+                                   issues(states: CLOSED, filterBy:{since: "2024-01-01T00:00:00Z"}) {
+                                     totalCount
+                                   }
+                                   pullRequests(states: CLOSED) {
+                                     totalCount
+                                   }
+                                 }
+                               }
+                               pageInfo {
+                                 hasNextPage
+                                 endCursor
+                               }
+                             }
+                           }
+                         }
+                    """.formatted(username, cursor);
+
+            request = new GraphQLRequest(graphqlQuery);
+            entity = new HttpEntity<>(request, headers);
+
+            response = restTemplate.exchange(
+                    graphqlUrl,
+                    HttpMethod.POST,
+                    entity,
+                    GitHubContributionStats.class
+            );
+
+            LOGGER.info("Response: {} {}", response.getStatusCode(), response.getBody());
+
+            contributionStats = response.getBody();
+
+            if (contributionStats == null) {
+                break;
+            }
+
+            allRepositories.addAll(contributionStats.getData().getUser().getRepositories().getEdges().stream().map(GitHubContributionStats.RepositoryEdge::getNode).toList());
+        }
+
+        return allRepositories;
+
     }
 
 }
