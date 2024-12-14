@@ -1,0 +1,18 @@
+server:
+  port: 9009
+
+spring:
+  application:
+    name: GitHub-Wrapped
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/githubwrapped
+
+auth:
+  token: AUTH_TOKEN
+
+github:
+  graphql:
+    url: https://api.github.com/graphql
+  username: GITHUB_USERNAME
+  token: GITHUB_TOKEN
