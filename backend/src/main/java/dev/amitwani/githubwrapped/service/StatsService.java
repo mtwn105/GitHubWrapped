@@ -2,6 +2,7 @@ package dev.amitwani.githubwrapped.service;
 
 import dev.amitwani.githubwrapped.dto.ResponseDTO;
 import dev.amitwani.githubwrapped.dto.StatsDTO;
+import dev.amitwani.githubwrapped.dto.TopUserDTO;
 import dev.amitwani.githubwrapped.dto.graphql.GitHubContributionStats;
 import dev.amitwani.githubwrapped.dto.graphql.GitHubPinnedItems;
 import dev.amitwani.githubwrapped.dto.graphql.GitHubRepositoryStats;
@@ -149,6 +150,12 @@ public class StatsService {
                 gitHubStats.setTopRepository(topRepository);
             }
 
+            // Total Stars
+            gitHubStats.setTotalStars(repositoryNodes.stream().mapToInt(GitHubRepositoryStats.RepositoryNode::getStars).sum());
+
+            // Total Forks
+            gitHubStats.setTotalForks(repositoryNodes.stream().mapToInt(GitHubRepositoryStats.RepositoryNode::getForkCount).sum());
+
             // Save User Data
             gitHubUser.setCreatedDate(new Date());
             gitHubUser = gitHubUserRepository.save(gitHubUser);
@@ -184,5 +191,34 @@ public class StatsService {
         statsDTO.setUsername(username);
 
         return statsDTO;
+    }
+
+    public List<TopUserDTO> getTopUsers() {
+
+
+        List<TopUserDTO> topUserList = new ArrayList<>();
+
+        List<GitHubStats> gitHubStatsList = gitHubStatsRepository.findTop6By();
+
+        LOGGER.info("Fetched top users: {}", gitHubStatsList);
+
+        gitHubStatsList.forEach(gitHubStats -> {
+            TopUserDTO topUser = new TopUserDTO();
+            topUser.setUsername(gitHubStats.getUsername());
+            GitHubUser gitHubUser = gitHubUserRepository.findById(gitHubStats.getUserId()).orElse(null);
+            if (gitHubUser != null) {
+                topUser.setName(gitHubUser.getName());
+                topUser.setAvatarUrl(gitHubUser.getAvatarUrl());
+                topUser.setUsername(gitHubUser.getUsername());
+            }
+            topUser.setTotalCommits(gitHubStats.getTotalCommits());
+            topUser.setTotalIssuesClosed(gitHubStats.getTotalIssuesClosed());
+            topUser.setTotalPullRequestsClosed(gitHubStats.getTotalPullRequestsClosed());
+            topUser.setTotalStars(gitHubStats.getTotalStars());
+            topUser.setTotalForks(gitHubStats.getTotalForks());
+            topUserList.add(topUser);
+        });
+
+        return topUserList;
     }
 }

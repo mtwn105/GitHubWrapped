@@ -31,7 +31,7 @@ public class AuthFilter extends OncePerRequestFilter {
             Instant start = Instant.now();
             filterChain.doFilter(request, response);
             Instant end = Instant.now();
-            LOGGER.info("Request {} took {} ms", request.getRequestURI(), end.toEpochMilli() - start.toEpochMilli());
+            LOGGER.info("Request {} {} took {} ms", request.getMethod(), request.getRequestURI(), end.toEpochMilli() - start.toEpochMilli());
         } else {
             LOGGER.warn("Unauthorized request {} from {}", request.getRequestURI(), request.getRemoteAddr());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

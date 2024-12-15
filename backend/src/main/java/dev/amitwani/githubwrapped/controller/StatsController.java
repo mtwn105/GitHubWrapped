@@ -2,15 +2,15 @@ package dev.amitwani.githubwrapped.controller;
 
 import dev.amitwani.githubwrapped.dto.ResponseDTO;
 import dev.amitwani.githubwrapped.dto.StatsDTO;
+import dev.amitwani.githubwrapped.dto.TopUserDTO;
 import dev.amitwani.githubwrapped.service.StatsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/stats")
@@ -37,5 +37,11 @@ public class StatsController {
         return statsService.generateGitHubStats(username);
     }
 
+    @GetMapping("/top")
+    public ResponseEntity<ResponseDTO> getTopUsers() {
+        LOGGER.info("Received request to fetch top users");
+        List<TopUserDTO> topUsers = statsService.getTopUsers();
+        return ResponseEntity.ok(new ResponseDTO("Top users fetched successfully", topUsers));
+    }
 
 }
