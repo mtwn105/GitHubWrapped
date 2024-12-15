@@ -1,5 +1,6 @@
 package dev.amitwani.githubwrapped.service;
 
+import dev.amitwani.githubwrapped.dto.ResponseDTO;
 import dev.amitwani.githubwrapped.dto.StatsDTO;
 import dev.amitwani.githubwrapped.dto.graphql.GitHubContributionStats;
 import dev.amitwani.githubwrapped.dto.graphql.GitHubPinnedItems;
@@ -12,6 +13,7 @@ import org.kohsuke.github.GHUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -30,18 +32,27 @@ public class StatsService {
     @Autowired
     private GitHubStatsRepository gitHubStatsRepository;
 
-    public void generateGitHubStats(String username) {
+    public ResponseEntity<ResponseDTO> generateGitHubStats(String username) {
         try {
-
-            if (gitHubUserRepository.existsByUsername(username)) {
-                throw new RuntimeException("User " + username + " stats already exists");
+            StatsDTO statsDTO = getStats(username);
+            if (statsDTO != null) {
+                LOGGER.info("User {} stats already exists", username);
+                return ResponseEntity.ok(new ResponseDTO("User stats already exists", statsDTO));
             }
-            // Fetch User Data from GitHub
-            GHUser user = gitHubService.getGitHubUser(username);
-            LOGGER.info("Fetched user data for user: {}", user);
+            GHUser user;
+            try {
+                // Fetch User Data from GitHub
+                user = gitHubService.getGitHubUser(username);
+                LOGGER.info("Fetched user data for user: {}", user);
 
-            if (user == null) {
-                throw new RuntimeException("User not found");
+                if (user == null) {
+                    LOGGER.error("No user data found for user: {}", username);
+                    return ResponseEntity.status(404).body(new ResponseDTO("No user data found", null));
+                }
+
+            } catch (Exception e) {
+                LOGGER.error("Failed to fetch user data for user: {}", username, e);
+                return ResponseEntity.status(404).body(new ResponseDTO("No user data found", null));
             }
 
             // Process User Data
@@ -57,8 +68,6 @@ public class StatsService {
             gitHubUser.setName(user.getName());
             gitHubUser.setTwitterUsername(user.getTwitterUsername());
             gitHubUser.setUsername(user.getLogin());
-
-            LOGGER.info("Saved user data for user: {}", gitHubUser);
 
             // Get User Pinned Repos
             GitHubPinnedItems pinnedRepos = gitHubService.getPinnedRepos(username);
@@ -85,7 +94,7 @@ public class StatsService {
 
             List<GitHubRepositoryStats.RepositoryNode> repositoryNodes = gitHubService.getRepositoryStats(username);
 
-            // Languagges
+            // Languages
             List<GitHubRepositoryStats.LanguageEdge> languageEdges = repositoryNodes
                     .stream()
                     .flatMap(node -> node.getLanguages().getEdges()
@@ -143,17 +152,23 @@ public class StatsService {
             // Save User Data
             gitHubUser.setCreatedDate(new Date());
             gitHubUser = gitHubUserRepository.save(gitHubUser);
+            LOGGER.info("Saved user data for user: {}", gitHubUser);
 
             // Save Stats
             gitHubStats.setUserId(gitHubUser.getId());
             gitHubStats = gitHubStatsRepository.save(gitHubStats);
-
             LOGGER.info("Generated stats for user: {}", gitHubStats);
 
+            statsDTO = new StatsDTO();
+            statsDTO.setStats(gitHubStats);
+            statsDTO.setUser(gitHubUser);
+            statsDTO.setUsername(username);
 
+            return ResponseEntity.status(201).body(new ResponseDTO("Stats generated successfully", statsDTO));
         } catch (Exception e) {
             LOGGER.error("Error generating stats for user: {}", username, e);
         }
+        return ResponseEntity.internalServerError().body(new ResponseDTO("Error generating stats", null));
     }
 
     public StatsDTO getStats(String username) {
