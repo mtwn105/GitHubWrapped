@@ -8,6 +8,9 @@ export const getTopUsers = async () => {
       headers: {
         Authorization: `${process.env.BACKEND_AUTH_TOKEN}`,
       },
+      next: {
+        revalidate: 10 * 60,
+      },
     }
   );
   if (response.ok) {

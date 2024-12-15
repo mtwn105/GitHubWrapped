@@ -16,6 +16,7 @@
     "next": "14.2.16",
     "react": "^18",
     "react-dom": "^18",
+    "recharts": "^2.15.0",
     "simplex-noise": "^4.0.3",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7"

@@ -49,6 +49,8 @@ export interface Stats {
   topRepository: TopRepository | null
   languagesStats: LanguagesStat[]
   contributionCalendar: ContributionCalendar
+  monthlyContributions: MonthlyContribution[]
+  dailyContributions: DailyContribution[]
 }
 
 export interface TopRepository {
@@ -79,5 +81,15 @@ export interface ContributionDay {
   date: string | null
   contributionCount: number | null
   color: string | null
+}
+
+export interface MonthlyContribution {
+  month: string
+  value: number
+}
+
+export interface DailyContribution {
+  day: string
+  value: number
 }
 

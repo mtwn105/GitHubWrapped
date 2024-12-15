@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Footer from "@/components/footer";
 import { ToasterProvider } from "@/components/ui/toaster";
+import Navbar from "@/components/navbar";
 
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
@@ -23,8 +24,11 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning lang="en">
       <body className={`${geistMono.className} antialiased`}>
-        <ToasterProvider>{children}</ToasterProvider>
-        <Footer />
+        <ToasterProvider>
+          <Navbar />
+          {children}
+          <Footer />
+        </ToasterProvider>
       </body>
     </html>
   );

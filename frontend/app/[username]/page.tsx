@@ -1,10 +1,11 @@
+import ContributionBreakdown from "@/components/contribution-breakdown";
+import ProfileHeader from "@/components/profile-header";
 import {
   ContributionCalendar,
   ContributionDay as ContributionDayType,
   StatsResponse,
   Week,
 } from "@/types/stats";
-import Image from "next/image";
 import Link from "next/link";
 
 const getStats = async (username: string) => {
@@ -12,6 +13,7 @@ const getStats = async (username: string) => {
     const response = await fetch(
       `${process.env.BACKEND_URL}/api/stats/${username}`,
       {
+        cache: "no-store",
         headers: {
           Authorization: `${process.env.BACKEND_AUTH_TOKEN}`,
           "Content-Type": "application/json",
@@ -38,9 +40,17 @@ function ContributionDay({ day }: { day: ContributionDayType }) {
   );
 }
 
-function ContributionGraph({ calendar }: { calendar: ContributionCalendar }) {
+function ContributionGraph({
+  calendar,
+  className,
+}: {
+  calendar: ContributionCalendar;
+  className?: string;
+}) {
   return (
-    <div className="bg-black/50 backdrop-blur-sm border border-white/[0.08] rounded-lg p-4 md:p-6 overflow-x-auto">
+    <div
+      className={`bg-black/50 backdrop-blur-sm border border-white/[0.08] rounded-lg p-4 md:p-6 overflow-x-auto ${className}`}
+    >
       <h2 className="text-lg md:text-xl font-semibold mb-4">
         Contribution Graph (2024)
       </h2>
@@ -82,7 +92,7 @@ export default async function GitHubWrapped({
 
   if (!stats?.data) {
     return (
-      <div className="flex flex-col min-h-screen items-center justify-center p-8">
+      <div className="    flex flex-col min-h-screen items-center justify-center p-8">
         <h1 className="text-white text-center text-2xl md:text-3xl">
           No GitHub Wrapped found for
         </h1>
@@ -104,40 +114,7 @@ export default async function GitHubWrapped({
   return (
     <div className="container text-white mx-auto px-4 py-8">
       {/* Profile Header */}
-      <div className="bg-black/50 backdrop-blur-sm border border-white/[0.08] rounded-lg p-6 mb-8 ">
-        <div className="flex flex-col md:flex-row items-center gap-6">
-          <Image
-            src={user.avatarUrl}
-            alt={user.username || ""}
-            width={120}
-            height={120}
-            className="rounded-full"
-          />
-          <div className="text-center md:text-left">
-            <h1 className="text-4xl font-bold mb-2">{user.name || username}</h1>
-            {user.bio && (
-              <p className="text-muted-foreground mb-4">{user.bio}</p>
-            )}
-            <div className="flex flex-wrap gap-4">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold">{user.followers}</span>
-                <span className="text-muted-foreground">Followers</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="font-semibold">{user.following}</span>
-                <span className="text-muted-foreground">Following</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="font-semibold">{user.publicRepos}</span>
-                <span className="text-muted-foreground">Repositories</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Contribution Graph */}
-      <ContributionGraph calendar={githubStats.contributionCalendar} />
+      <ProfileHeader user={user} username={username} />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
@@ -207,6 +184,48 @@ export default async function GitHubWrapped({
         </div>
       </div>
 
+      {/* Top Repository */}
+      <div className="bg-black/50 backdrop-blur-sm border border-white/[0.08] rounded-lg p-6 mt-8">
+        <h2 className="text-xl font-semibold mb-4">Top Repository</h2>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex flex-col">
+                <a
+                  href={`https://github.com/${githubStats.topRepository?.name}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium hover:underline"
+                >
+                  {githubStats.topRepository?.name}
+                </a>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1">
+                <span className="text-sm">
+                  ⭐ {githubStats.topRepository?.stars}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-sm">
+                  🍴 {githubStats.topRepository?.forks}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Contribution Graph */}
+      <ContributionGraph
+        className="mt-8"
+        calendar={githubStats.contributionCalendar}
+      />
+
+      {/* Contribution Breakdown */}
+      <ContributionBreakdown calendar={githubStats.contributionCalendar} />
+
       {/* Pinned Repositories */}
       {user.pinnedRepositories.length > 0 && (
         <div className="mt-8">
@@ -218,7 +237,7 @@ export default async function GitHubWrapped({
                 href={repo.url || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-black/50 backdrop-blur-sm border border-white/[0.08] rounded-lg p-6 hover:bg-black/60 transition-all"
+                className="bg-black/50 backdrop-blur-sm border border-white/[0.08] rounded-lg p-6 hover:scale-105 transition-all duration-300 hover:cursor-pointer hover:bg-white/10"
               >
                 <h3 className="font-semibold mb-2">{repo.name}</h3>
                 {repo.description && (
@@ -240,14 +259,14 @@ export default async function GitHubWrapped({
                       </span>
                     </div>
                   )}
-                  {repo.stars && (
+                  {repo.stars && repo.stars > 0 && (
                     <div className="flex items-center gap-1">
                       <span className="text-sm text-muted-foreground">
                         ⭐ {repo.stars}
                       </span>
                     </div>
                   )}
-                  {repo.forkCount && (
+                  {repo.forkCount && repo.forkCount > 0 && (
                     <div className="flex items-center gap-1">
                       <span className="text-sm text-muted-foreground">
                         🍴 {repo.forkCount}
