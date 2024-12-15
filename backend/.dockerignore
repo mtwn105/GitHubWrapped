@@ -1,0 +1,36 @@
+# flyctl launch added from .gitignore
+!**\.mvn\wrapper\maven-wrapper.jar
+
+### STS ###
+**\.apt_generated
+**\.classpath
+**\.factorypath
+**\.project
+**\.settings
+**\.springBeans
+**\.sts4-cache
+
+### IntelliJ IDEA ###
+**\.idea
+**\*.iws
+**\*.iml
+**\*.ipr
+
+### NetBeans ###
+nbproject\private
+nbbuild
+dist
+nbdist
+.nb-gradle
+**\build
+!**\**\src\main\**\build
+!**\**\src\test\**\build
+
+### VS Code ###
+**\.vscode
+
+# flyctl launch added from .idea\.gitignore
+# Default ignored files
+.idea\shelf
+.idea\workspace.xml
+fly.toml

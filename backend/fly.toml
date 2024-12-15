@@ -1,0 +1,28 @@
+# fly.toml app configuration file generated for gh-wrapped-backend on 2024-12-15T19:05:47+05:30
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'gh-wrapped-backend'
+primary_region = 'iad'
+
+[build]
+
+[http_service]
+  internal_port = 9009
+  force_https = true
+  auto_stop_machines = 'off'
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['app']
+  [[http_service.checks]]
+    grace_period = "60s"
+    interval = "30s"
+    method = "GET"
+    timeout = "15s"
+    path = "/api/health"
+
+[[vm]]
+  size = 'shared-cpu-1x'
+  memory = "1gb"
+
