@@ -7,13 +7,19 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Data
 @Document("user")
-public class GitHubUser {
+public class GitHubUser implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @Id
     private String id;
     private String username;
@@ -35,7 +41,10 @@ public class GitHubUser {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class PinnedRepositories {
+    public static class PinnedRepositories implements Serializable {
+
+        @Serial
+        private static final long serialVersionUID = 1L;
         private String name;
         private String description;
         private String url;

@@ -95,6 +95,7 @@ public class GitHubService {
         );
 
         LOGGER.info("Response: {} {}", response.getStatusCode(), response.getBody());
+        LOGGER.info("Response Headers: {}", response.getHeaders());
 
 
         return response.getBody();
@@ -160,6 +161,7 @@ public class GitHubService {
         );
 
         LOGGER.info("Response: {} {}", response.getStatusCode(), response.getBody());
+        LOGGER.info("Response Headers: {}", response.getHeaders());
 
 
         GitHubRepositoryStats contributionStats = response.getBody();
@@ -226,6 +228,7 @@ public class GitHubService {
             );
 
             LOGGER.info("Response: {} {}", response.getStatusCode(), response.getBody());
+            LOGGER.info("Response Headers: {}", response.getHeaders());
 
             contributionStats = response.getBody();
 
@@ -284,6 +287,7 @@ public class GitHubService {
         );
 
         LOGGER.info("Response: {} {}", response.getStatusCode(), response.getBody());
+        LOGGER.info("Response Headers: {}", response.getHeaders());
 
         return response.getBody();
 

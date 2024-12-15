@@ -1,8 +1,9 @@
 package dev.amitwani.githubwrapped.service;
 
+import dev.amitwani.githubwrapped.dto.StatsDTO;
 import dev.amitwani.githubwrapped.dto.graphql.GitHubContributionStats;
-import dev.amitwani.githubwrapped.dto.graphql.GitHubRepositoryStats;
 import dev.amitwani.githubwrapped.dto.graphql.GitHubPinnedItems;
+import dev.amitwani.githubwrapped.dto.graphql.GitHubRepositoryStats;
 import dev.amitwani.githubwrapped.model.GitHubStats;
 import dev.amitwani.githubwrapped.model.GitHubUser;
 import dev.amitwani.githubwrapped.repository.GitHubStatsRepository;
@@ -127,8 +128,8 @@ public class StatsService {
             GitHubStats.Repository topRepository = new GitHubStats.Repository();
 
             GitHubRepositoryStats.RepositoryNode topRepositoryNode = repositoryNodes.stream()
-                            .max(Comparator.comparing(GitHubRepositoryStats.RepositoryNode::getStars))
-                            .orElse(null);
+                    .max(Comparator.comparing(GitHubRepositoryStats.RepositoryNode::getStars))
+                    .orElse(null);
 
             if (topRepositoryNode != null) {
                 topRepository.setName(topRepositoryNode.getName());
@@ -153,5 +154,20 @@ public class StatsService {
         } catch (Exception e) {
             LOGGER.error("Error generating stats for user: {}", username, e);
         }
+    }
+
+    public StatsDTO getStats(String username) {
+
+        GitHubUser gitHubUser = gitHubUserRepository.findByUsername(username);
+        if (gitHubUser == null) {
+            return null;
+        }
+
+        StatsDTO statsDTO = new StatsDTO();
+        statsDTO.setStats(gitHubStatsRepository.findByUsername(username));
+        statsDTO.setUser(gitHubUser);
+        statsDTO.setUsername(username);
+
+        return statsDTO;
     }
 }

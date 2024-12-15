@@ -1,8 +1,10 @@
 package dev.amitwani.githubwrapped.controller;
 
 import dev.amitwani.githubwrapped.dto.ResponseDTO;
+import dev.amitwani.githubwrapped.dto.StatsDTO;
 import dev.amitwani.githubwrapped.service.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +18,12 @@ public class StatsController {
     private StatsService statsService;
 
     @GetMapping("/{username}")
-    public String getStats() {
-        return "Stats";
+    public ResponseEntity<ResponseDTO> getStats(@PathVariable String username) {
+        StatsDTO statsDTO = statsService.getStats(username);
+        if (statsDTO == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(new ResponseDTO("Stats fetched successfully", statsDTO));
     }
 
     @PostMapping("/{username}")

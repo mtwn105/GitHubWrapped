@@ -29,10 +29,4 @@ public class GitHubContributionStats {
         private ContributionsCollection contributionsCollection;
     }
 
-    @Data
-    public static class Week {
-        private ArrayList<GitHubStats.ContributionDay> contributionDays;
-    }
-
-
 }
