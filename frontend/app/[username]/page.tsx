@@ -1,4 +1,4 @@
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 
 import ContributionBreakdown from "@/components/contribution-breakdown";
 import ProfileHeader from "@/components/profile-header";
@@ -20,10 +20,11 @@ import {
 import SocialShare from "@/components/social-share";
 import { getStats } from "../actions/stats-action";
 
-export async function generateMetadata(
-  { params }: { params: { username: string } },
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: { username: string };
+}): Promise<Metadata> {
   // read route params
   const username = (await params).username;
 
