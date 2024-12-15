@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Footer from "@/components/footer";
+import { ToasterProvider } from "@/components/ui/toaster";
 
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
@@ -22,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistMono.className} antialiased`}>
-        {children}
+        <ToasterProvider>{children}</ToasterProvider>
         <Footer />
       </body>
     </html>

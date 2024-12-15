@@ -4,13 +4,14 @@ import { WavyBackground } from "@/components/ui/wavy-background";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { generateWrapped } from "./actions/stats-action";
+import { useToast } from "@/components/ui/toaster";
 
 export default function Home() {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -18,13 +19,14 @@ export default function Home() {
     try {
       const response = await generateWrapped(username);
       if (response.error) {
-        setError(response.error);
+        toast(response.error, "error");
       } else {
+        toast("Successfully generated wrapped!", "success");
         router.push(`/${username}`);
       }
     } catch (error) {
       console.error("Error generating wrapped:", error);
-      setError("Error generating wrapped");
+      toast("Error generating wrapped", "error");
     } finally {
       setLoading(false);
     }
@@ -63,7 +65,6 @@ export default function Home() {
               </div>
             </>
           )}
-          {error && <p className="text-red-500 mt-4">{error}</p>}
         </div>
       </WavyBackground>
 
