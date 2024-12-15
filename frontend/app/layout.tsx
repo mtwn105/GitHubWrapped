@@ -3,7 +3,6 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Footer from "@/components/footer";
 import { ToasterProvider } from "@/components/ui/toaster";
-import Navbar from "@/components/navbar";
 
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",

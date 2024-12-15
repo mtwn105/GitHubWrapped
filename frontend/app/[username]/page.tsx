@@ -30,9 +30,6 @@ export async function generateMetadata(
   // fetch data
   const stats = await getStats(username);
 
-  // optionally access and extend (rather than replace) parent metadata
-  const previousImages = (await parent).openGraph?.images || [];
-
   return {
     title: stats?.data?.user?.name + " | GitHub Wrapped 2024",
     openGraph: {
