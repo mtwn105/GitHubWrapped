@@ -1,18 +1,33 @@
 "use client";
 
 import { WavyBackground } from "@/components/ui/wavy-background";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { generateWrapped } from "./actions/stats-action";
 
 export default function Home() {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleGenerate = () => {
+  const router = useRouter();
+
+  const handleGenerate = async () => {
     setLoading(true);
     console.log("Generating wrapped for", username);
-    setTimeout(() => {
+    try {
+      const response = await generateWrapped(username);
+      if (response.error) {
+        setError(response.error);
+      } else {
+        router.push(`/${username}`);
+      }
+    } catch (error) {
+      console.error("Error generating wrapped:", error);
+      setError("Error generating wrapped");
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
   return (
@@ -48,6 +63,7 @@ export default function Home() {
               </div>
             </>
           )}
+          {error && <p className="text-red-500 mt-4">{error}</p>}
         </div>
       </WavyBackground>
 

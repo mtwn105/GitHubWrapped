@@ -4,6 +4,7 @@
 
 body {
   font-family: GeistMono, Arial, Helvetica, sans-serif;
+  background-color: #000;
 }
 
 @layer utilities {
