@@ -15,6 +15,7 @@ public class TopUserDTO implements Serializable {
     private String username;
     private String name;
     private String avatarUrl;
+    private long totalContributions;
     private long totalCommits;
     private long totalIssuesClosed;
     private long totalPullRequestsClosed;

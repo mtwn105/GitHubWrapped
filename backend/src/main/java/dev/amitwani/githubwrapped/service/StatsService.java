@@ -211,6 +211,8 @@ public class StatsService {
                 topUser.setAvatarUrl(gitHubUser.getAvatarUrl());
                 topUser.setUsername(gitHubUser.getUsername());
             }
+
+            topUser.setTotalContributions(gitHubStats.getContributionCalendar().getTotalContributions());
             topUser.setTotalCommits(gitHubStats.getTotalCommits());
             topUser.setTotalIssuesClosed(gitHubStats.getTotalIssuesClosed());
             topUser.setTotalPullRequestsClosed(gitHubStats.getTotalPullRequestsClosed());
@@ -218,6 +220,8 @@ public class StatsService {
             topUser.setTotalForks(gitHubStats.getTotalForks());
             topUserList.add(topUser);
         });
+
+        topUserList.sort(Comparator.comparing(TopUserDTO::getTotalContributions).reversed());
 
         return topUserList;
     }
