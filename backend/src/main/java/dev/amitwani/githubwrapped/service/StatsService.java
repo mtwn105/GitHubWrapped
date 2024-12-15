@@ -1,6 +1,7 @@
 package dev.amitwani.githubwrapped.service;
 
 import dev.amitwani.githubwrapped.dto.graphql.GitHubContributionStats;
+import dev.amitwani.githubwrapped.dto.graphql.GitHubRepositoryStats;
 import dev.amitwani.githubwrapped.dto.graphql.GitHubPinnedItems;
 import dev.amitwani.githubwrapped.model.GitHubStats;
 import dev.amitwani.githubwrapped.model.GitHubUser;
@@ -13,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class StatsService {
@@ -83,19 +82,10 @@ public class StatsService {
             GitHubStats gitHubStats = new GitHubStats();
             gitHubStats.setUsername(username);
 
-            List<GitHubContributionStats.RepositoryNode> repositoryNodes = gitHubService.getContributionStats(username);
-
-            // Total Commits
-            long totalCommits = repositoryNodes.stream().filter(node -> node.getCommits() != null).mapToLong(node -> node.getCommits().getTarget().getHistory().getTotalCount()).sum();
-
-            // Total Issues
-            long totalIssuesClosed = repositoryNodes.stream().mapToLong(node -> node.getIssues().getTotalCount()).sum();
-
-            // Total Pull Requests
-            long totalPullRequestsClosed = repositoryNodes.stream().mapToLong(node -> node.getPullRequests().getTotalCount()).sum();
+            List<GitHubRepositoryStats.RepositoryNode> repositoryNodes = gitHubService.getRepositoryStats(username);
 
             // Languagges
-            List<GitHubContributionStats.LanguageEdge> languageEdges = repositoryNodes
+            List<GitHubRepositoryStats.LanguageEdge> languageEdges = repositoryNodes
                     .stream()
                     .flatMap(node -> node.getLanguages().getEdges()
                             .stream()
@@ -124,15 +114,20 @@ public class StatsService {
                     .toList();
 
             gitHubStats.setLanguagesStats(languageStats);
-            gitHubStats.setTotalCommits(totalCommits);
-            gitHubStats.setTotalIssuesClosed(totalIssuesClosed);
-            gitHubStats.setTotalPullRequestsClosed(totalPullRequestsClosed);
+
+            // Get Contribution Stats
+            GitHubContributionStats contributionStats = gitHubService.getContributionStats(username);
+
+            gitHubStats.setTotalCommits(contributionStats.getData().getUser().getContributionsCollection().getCommits());
+            gitHubStats.setTotalIssuesClosed(contributionStats.getData().getUser().getContributionsCollection().getIssuesClosed());
+            gitHubStats.setTotalPullRequestsClosed(contributionStats.getData().getUser().getContributionsCollection().getPullRequestsClosed());
+            gitHubStats.setContributionCalendar(contributionStats.getData().getUser().getContributionsCollection().getContributionCalendar());
 
             // Top Repository
             GitHubStats.Repository topRepository = new GitHubStats.Repository();
 
-            GitHubContributionStats.RepositoryNode topRepositoryNode = repositoryNodes.stream()
-                            .max(Comparator.comparing(GitHubContributionStats.RepositoryNode::getStars))
+            GitHubRepositoryStats.RepositoryNode topRepositoryNode = repositoryNodes.stream()
+                            .max(Comparator.comparing(GitHubRepositoryStats.RepositoryNode::getStars))
                             .orElse(null);
 
             if (topRepositoryNode != null) {

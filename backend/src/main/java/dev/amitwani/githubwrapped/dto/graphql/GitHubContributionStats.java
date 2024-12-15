@@ -1,8 +1,10 @@
 package dev.amitwani.githubwrapped.dto.graphql;
 
+import dev.amitwani.githubwrapped.model.GitHubStats;
 import lombok.Data;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Date;
 
 @Data
 public class GitHubContributionStats {
@@ -10,89 +12,27 @@ public class GitHubContributionStats {
     private DataNode data;
 
     @Data
+    public static class ContributionsCollection {
+        private int commits;
+        private int issuesClosed;
+        private int pullRequestsClosed;
+        private GitHubStats.ContributionCalendar contributionCalendar;
+    }
+
+    @Data
     public static class DataNode {
-        private UserNode user;
+        private User user;
     }
 
     @Data
-    public static class UserNode {
-        private RepositoryConnection repositories;
+    public static class User {
+        private ContributionsCollection contributionsCollection;
     }
 
     @Data
-    public static class RepositoryConnection {
-        private List<RepositoryEdge> edges;
-        private PageInfo pageInfo;
+    public static class Week {
+        private ArrayList<GitHubStats.ContributionDay> contributionDays;
     }
 
-    @Data
-    public static class RepositoryEdge {
-        private RepositoryNode node;
-    }
 
-    @Data
-    public static class RepositoryNode {
-        private String name;
-        private int stars;
-        private int forkCount;
-        private PrimaryLanguage primaryLanguage;
-        private CommitsNode commits;
-        private LanguageRootNode languages;
-        private IssuesNode issues;
-        private PullRequestsNode pullRequests;
-    }
-
-    @Data
-    public static class PrimaryLanguage {
-        private String name;
-        private String color;
-    }
-
-    @Data
-    public static class LanguageRootNode {
-        private List<LanguageEdge> edges;
-    }
-
-    @Data
-    public static class LanguageEdge {
-        private LanguageNode node;
-        private int size;
-    }
-
-    @Data
-    public static class PageInfo {
-        private boolean hasNextPage;
-        private String endCursor;
-    }
-
-    @Data
-    public static class CommitsNode {
-        private TargetNode target;
-    }
-
-    @Data
-    public static class TargetNode {
-        private HistoryNode history;
-    }
-
-    @Data
-    public static class HistoryNode {
-        private int totalCount;
-    }
-
-    @Data
-    public static class LanguageNode {
-        private String name;
-        private String color;
-    }
-
-    @Data
-    public static class IssuesNode {
-        private int totalCount;
-    }
-
-    @Data
-    public static class PullRequestsNode {
-        private int totalCount;
-    }
 }

@@ -1,15 +1,13 @@
 package dev.amitwani.githubwrapped.model;
 
+import dev.amitwani.githubwrapped.dto.graphql.GitHubContributionStats;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Data
 @Document("stats")
@@ -25,6 +23,22 @@ public class GitHubStats {
     private long totalForks;
     private Repository topRepository;
     private List<LanguageStats> languagesStats = new ArrayList<>();
+    private ContributionCalendar contributionCalendar;
+
+    @Data
+    public static class ContributionCalendar {
+        private int totalContributions;
+        private ArrayList<GitHubContributionStats.Week> weeks;
+    }
+
+    @Data
+    public static class ContributionDay {
+        private int weekday;
+        private Date date;
+        private int contributionCount;
+        private String color;
+    }
+
 
     @Data
     @AllArgsConstructor

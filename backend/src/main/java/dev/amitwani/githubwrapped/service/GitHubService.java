@@ -2,6 +2,7 @@ package dev.amitwani.githubwrapped.service;
 
 import dev.amitwani.githubwrapped.dto.graphql.GitHubContributionStats;
 import dev.amitwani.githubwrapped.dto.graphql.GitHubPinnedItems;
+import dev.amitwani.githubwrapped.dto.graphql.GitHubRepositoryStats;
 import dev.amitwani.githubwrapped.dto.graphql.GraphQLRequest;
 import jakarta.annotation.PostConstruct;
 import org.kohsuke.github.GHUser;
@@ -99,7 +100,7 @@ public class GitHubService {
         return response.getBody();
     }
 
-    public List<GitHubContributionStats.RepositoryNode> getContributionStats(String username) {
+    public List<GitHubRepositoryStats.RepositoryNode> getRepositoryStats(String username) {
 
         String graphqlQuery = """
                     query {
@@ -132,12 +133,6 @@ public class GitHubService {
                                    size
                                  }
                                }
-                               issues(states: CLOSED, filterBy:{since: "2024-01-01T00:00:00Z"}) {
-                                 totalCount
-                               }
-                               pullRequests(states: CLOSED) {
-                                 totalCount
-                               }
                              }
                            }
                            pageInfo {
@@ -157,23 +152,23 @@ public class GitHubService {
 
         HttpEntity<GraphQLRequest> entity = new HttpEntity<>(request, headers);
 
-        ResponseEntity<GitHubContributionStats> response = restTemplate.exchange(
+        ResponseEntity<GitHubRepositoryStats> response = restTemplate.exchange(
                 graphqlUrl,
                 HttpMethod.POST,
                 entity,
-                GitHubContributionStats.class
+                GitHubRepositoryStats.class
         );
 
         LOGGER.info("Response: {} {}", response.getStatusCode(), response.getBody());
 
 
-        GitHubContributionStats contributionStats = response.getBody();
+        GitHubRepositoryStats contributionStats = response.getBody();
 
         if (contributionStats == null) {
             return null;
         }
 
-        List<GitHubContributionStats.RepositoryNode> allRepositories = new ArrayList<>(contributionStats.getData().getUser().getRepositories().getEdges().stream().map(GitHubContributionStats.RepositoryEdge::getNode).toList());
+        List<GitHubRepositoryStats.RepositoryNode> allRepositories = new ArrayList<>(contributionStats.getData().getUser().getRepositories().getEdges().stream().map(GitHubRepositoryStats.RepositoryEdge::getNode).toList());
 
         // Handle pagination
         while (contributionStats.getData().getUser().getRepositories().getPageInfo().isHasNextPage()) {
@@ -209,12 +204,6 @@ public class GitHubService {
                                        size
                                      }
                                    }
-                                   issues(states: CLOSED, filterBy:{since: "2024-01-01T00:00:00Z"}) {
-                                     totalCount
-                                   }
-                                   pullRequests(states: CLOSED) {
-                                     totalCount
-                                   }
                                  }
                                }
                                pageInfo {
@@ -233,7 +222,7 @@ public class GitHubService {
                     graphqlUrl,
                     HttpMethod.POST,
                     entity,
-                    GitHubContributionStats.class
+                    GitHubRepositoryStats.class
             );
 
             LOGGER.info("Response: {} {}", response.getStatusCode(), response.getBody());
@@ -244,10 +233,59 @@ public class GitHubService {
                 break;
             }
 
-            allRepositories.addAll(contributionStats.getData().getUser().getRepositories().getEdges().stream().map(GitHubContributionStats.RepositoryEdge::getNode).toList());
+            allRepositories.addAll(contributionStats.getData().getUser().getRepositories().getEdges().stream().map(GitHubRepositoryStats.RepositoryEdge::getNode).toList());
         }
 
         return allRepositories;
+
+    }
+
+    public GitHubContributionStats getContributionStats(String username) {
+
+        String graphqlQuery = """
+                    query {
+                       user(login: "%s") {
+                            contributionsCollection(
+                              from: "2024-01-01T00:00:00Z"
+                              to: "2024-12-31T23:59:59Z"
+                            ) {
+                              commits: totalCommitContributions
+                              issuesClosed: totalIssueContributions
+                              pullRequestsClosed: totalPullRequestContributions
+                              contributionCalendar {
+                                totalContributions
+                                weeks {
+                                  contributionDays {
+                                    weekday
+                                    date
+                                    contributionCount
+                                    color
+                                  }
+                                }
+                              }
+                            }
+                          }
+                     }
+                """.formatted(username);
+
+        GraphQLRequest request = new GraphQLRequest(graphqlQuery);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.set("Content-Type", "application/json");
+
+        HttpEntity<GraphQLRequest> entity = new HttpEntity<>(request, headers);
+
+        ResponseEntity<GitHubContributionStats> response = restTemplate.exchange(
+                graphqlUrl,
+                HttpMethod.POST,
+                entity,
+                GitHubContributionStats.class
+        );
+
+        LOGGER.info("Response: {} {}", response.getStatusCode(), response.getBody());
+
+        return response.getBody();
 
     }
 
