@@ -1,4 +1,4 @@
-export interface Root {
+export interface StatsResponse {
   message: string | null
   data: Data | null
 }
