@@ -1,7 +1,5 @@
 "use client";
 
-import { Share2Icon } from "lucide-react";
-
 export default function SocialShare({ username }: { username: string }) {
   return (
     <div className="fixed bottom-8 left-8 flex gap-4 z-50">
