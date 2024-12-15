@@ -7,6 +7,7 @@ export interface TopUser {
   username: string
   name: string
   avatarUrl: string
+  totalContributions: number
   totalCommits: number
   totalIssuesClosed: number
   totalPullRequestsClosed: number

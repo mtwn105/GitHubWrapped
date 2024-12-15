@@ -25,7 +25,6 @@ export default function RootLayout({
     <html suppressHydrationWarning lang="en">
       <body className={`${geistMono.className} antialiased`}>
         <ToasterProvider>
-          <Navbar />
           {children}
           <Footer />
         </ToasterProvider>

@@ -16,10 +16,16 @@ export default function SaveImageButton() {
         const saveimage = document.getElementById("save-image-btn");
         if (saveimage) saveimage.style.visibility = "hidden";
 
+        // Hide this button
+        const twitterShareButton = document.getElementById(
+          "twitter-share-button"
+        );
+        if (twitterShareButton) twitterShareButton.style.visibility = "hidden";
+
         // Add a para
         const para = document.createElement("p");
         para.textContent = "Generated using GitHubWrapped.xyz";
-        para.className = "text-white p-8 text-xl text-center";
+        para.className = "text-white p-8 text-xl font-bold text-center";
         document.body.appendChild(para);
 
         // Capture the screenshot
@@ -32,6 +38,7 @@ export default function SaveImageButton() {
         // Restore the navbar
         if (navbar) navbar.style.visibility = "visible";
         if (saveimage) saveimage.style.visibility = "visible";
+        if (twitterShareButton) twitterShareButton.style.visibility = "visible";
 
         // Remove p
         document.body.removeChild(para);

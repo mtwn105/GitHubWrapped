@@ -74,7 +74,7 @@ export default function Home() {
             }}
             type="text"
             placeholder="Enter GitHub username"
-            className="px-4 py-2 mt-8 w-64 text-sm rounded-md border border-white/20 bg-white/10 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/20"
+            className="px-4 py-2 mt-8 w-64 text-sm rounded-md border border-white/20 bg-white/10 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20"
           />
           <button
             className="mt-4 inline-flex h-10 items-center justify-center rounded-md bg-white px-8 text-sm font-medium text-black transition-colors hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-white/20 active:scale-95"
@@ -92,6 +92,43 @@ export default function Home() {
               </div>
             </>
           )}
+        </div>
+        <div className="flex gap-4 justify-center mt-8">
+          <button
+            onClick={() =>
+              window.open("https://github.com/mtwn105/GitHubWrapped", "_blank")
+            }
+            className="inline-flex h-10 items-center justify-center rounded-md bg-white/10 px-8 text-sm font-medium text-white transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 active:scale-95 border border-white/20"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-2"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+            >
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+            </svg>
+            Star us on GitHub
+          </button>
+          <button
+            onClick={() =>
+              window.open(
+                "https://twitter.com/intent/tweet?text=Create your GitHub Wrapped for 2024!%20%23GitHubWrapped&url=https://githubwrapped.xyz",
+                "_blank"
+              )
+            }
+            className="inline-flex h-10 items-center justify-center rounded-md bg-white/10 px-8 text-sm font-medium text-white transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 active:scale-95 border border-white/20"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-2"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+            Share us on X
+          </button>
         </div>
       </WavyBackground>
 
@@ -137,11 +174,7 @@ export default function Home() {
                       </svg>
                       Contributions
                     </span>
-                    <span>
-                      {user.totalCommits +
-                        user.totalIssuesClosed +
-                        user.totalPullRequestsClosed}
-                    </span>
+                    <span>{user.totalContributions}</span>
                   </div>
                   <div className="flex justify-between text-sm text-white/60">
                     <span className="flex items-center gap-2">
