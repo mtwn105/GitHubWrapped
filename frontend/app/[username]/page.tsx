@@ -1,3 +1,5 @@
+import type { Metadata, ResolvingMetadata } from "next";
+
 import ContributionBreakdown from "@/components/contribution-breakdown";
 import ProfileHeader from "@/components/profile-header";
 import SaveImageButton from "@/components/save-image";
@@ -16,27 +18,32 @@ import {
   GitFork,
 } from "lucide-react";
 import SocialShare from "@/components/social-share";
-const getStats = async (username: string) => {
-  try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/stats/${username}`,
-      {
-        cache: "no-store",
-        headers: {
-          Authorization: `${process.env.BACKEND_AUTH_TOKEN}`,
-          "Content-Type": "application/json",
+import { getStats } from "../actions/stats-action";
+
+export async function generateMetadata(
+  { params }: { params: { username: string } },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // read route params
+  const username = (await params).username;
+
+  // fetch data
+  const stats = await getStats(username);
+
+  // optionally access and extend (rather than replace) parent metadata
+  const previousImages = (await parent).openGraph?.images || [];
+
+  return {
+    title: stats?.data?.user?.name + " | GitHub Wrapped 2024",
+    openGraph: {
+      images: [
+        {
+          url: `/api/${username}/og`,
         },
-      }
-    );
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    }
-  } catch (error) {
-    console.error("Error fetching stats:", error);
-  }
-  return null;
-};
+      ],
+    },
+  };
+}
 
 function ContributionDay({ day }: { day: ContributionDayType }) {
   return (

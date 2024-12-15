@@ -18,3 +18,27 @@ export const generateWrapped = async (username: string) => {
     return { error: "Error generating wrapped" };
   }
 };
+
+export const getStats = async (username: string) => {
+  try {
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/api/stats/${username}`,
+      {
+        next: {
+          revalidate: 60 * 10,
+        },
+        headers: {
+          Authorization: `${process.env.BACKEND_AUTH_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    }
+  } catch (error) {
+    console.error("Error fetching stats:", error);
+  }
+  return null;
+};
