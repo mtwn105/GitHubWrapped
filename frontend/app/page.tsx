@@ -67,6 +67,11 @@ export default function Home() {
           <input
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleGenerate();
+              }
+            }}
             type="text"
             placeholder="Enter GitHub username"
             className="px-4 py-2 mt-8 w-64 text-sm rounded-md border border-white/20 bg-white/10 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/20"

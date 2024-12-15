@@ -1,5 +1,6 @@
 import ContributionBreakdown from "@/components/contribution-breakdown";
 import ProfileHeader from "@/components/profile-header";
+import SaveImageButton from "@/components/save-image";
 import {
   ContributionCalendar,
   ContributionDay as ContributionDayType,
@@ -7,7 +8,14 @@ import {
   Week,
 } from "@/types/stats";
 import Link from "next/link";
-
+import {
+  GitCommit,
+  CircleSlash,
+  GitPullRequest,
+  Star,
+  GitFork,
+} from "lucide-react";
+import SocialShare from "@/components/social-share";
 const getStats = async (username: string) => {
   try {
     const response = await fetch(
@@ -34,7 +42,10 @@ function ContributionDay({ day }: { day: ContributionDayType }) {
   return (
     <div
       className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-sm text-white/[0.08]"
-      style={{ backgroundColor: day.color || "#161b22" }}
+      style={{
+        backgroundColor:
+          day.color === "#ebedf0" ? "#222" : day.color || "#161b22",
+      }}
       title={`${day.contributionCount} contributions on ${day.date}`}
     />
   );
@@ -115,7 +126,11 @@ export default async function GitHubWrapped({
     <div className="container text-white mx-auto px-4 py-8">
       {/* Profile Header */}
       <ProfileHeader user={user} username={username} />
+      {/* Save as Image Button */}
+      <SaveImageButton />
 
+      {/* Social Share Buttons */}
+      <SocialShare username={username} />
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
         {/* Contribution Stats */}
@@ -123,17 +138,26 @@ export default async function GitHubWrapped({
           <h2 className="text-xl font-semibold mb-4">Contributions (2024)</h2>
           <div className="space-y-4">
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Total Commits</span>
+              <div className="flex items-center gap-2">
+                <GitCommit className="w-4 h-4" />
+                <span className="text-muted-foreground">Total Commits</span>
+              </div>
               <span className="font-semibold">{githubStats.totalCommits}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Issues Closed</span>
+              <div className="flex items-center gap-2">
+                <CircleSlash className="w-4 h-4" />
+                <span className="text-muted-foreground">Issues Closed</span>
+              </div>
               <span className="font-semibold">
                 {githubStats.totalIssuesClosed}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">PRs Merged</span>
+              <div className="flex items-center gap-2">
+                <GitPullRequest className="w-4 h-4" />
+                <span className="text-muted-foreground">PRs Merged</span>
+              </div>
               <span className="font-semibold">
                 {githubStats.totalPullRequestsClosed}
               </span>
@@ -146,11 +170,17 @@ export default async function GitHubWrapped({
           <h2 className="text-xl font-semibold mb-4">Repository Impact</h2>
           <div className="space-y-4">
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Total Stars</span>
+              <div className="flex items-center gap-2">
+                <Star className="w-4 h-4" />
+                <span className="text-muted-foreground">Total Stars</span>
+              </div>
               <span className="font-semibold">{githubStats.totalStars}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Total Forks</span>
+              <div className="flex items-center gap-2">
+                <GitFork className="w-4 h-4" />
+                <span className="text-muted-foreground">Total Forks</span>
+              </div>
               <span className="font-semibold">{githubStats.totalForks}</span>
             </div>
           </div>

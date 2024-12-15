@@ -92,8 +92,12 @@ export default function ContributionBreakdown({
   // Weekend activity
   const weekendActivity = calendar.weeks
     .flatMap((week) => week.contributionDays)
-    .filter((day) => day.weekday === 0 || day.weekday === 6)
-    .reduce((total) => total + 1, 0);
+    .filter(
+      (day) =>
+        (day.weekday === 0 || day.weekday === 6) &&
+        day.contributionCount &&
+        day.contributionCount > 0
+    ).length;
 
   // Active Days
   const activeDays = calendar.weeks

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { User } from "@/types/stats";
+import { Users, UserPlus, BookMarked } from "lucide-react";
 
 export default function ProfileHeader({
   user,
@@ -28,14 +29,17 @@ export default function ProfileHeader({
           {user.bio && <p className="text-muted-foreground mb-4">{user.bio}</p>}
           <div className="flex flex-wrap gap-4">
             <div className="flex items-center gap-2">
+              <Users className="w-4 h-4" />
               <span className="font-semibold">{user.followers}</span>
               <span className="text-muted-foreground">Followers</span>
             </div>
             <div className="flex items-center gap-2">
+              <UserPlus className="w-4 h-4" />
               <span className="font-semibold">{user.following}</span>
               <span className="text-muted-foreground">Following</span>
             </div>
             <div className="flex items-center gap-2">
+              <BookMarked className="w-4 h-4" />
               <span className="font-semibold">{user.publicRepos}</span>
               <span className="text-muted-foreground">Repositories</span>
             </div>
