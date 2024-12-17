@@ -25,7 +25,7 @@ export const getStats = async (username: string) => {
       `${process.env.BACKEND_URL}/api/stats/${username}`,
       {
         next: {
-          revalidate: 60 * 10,
+          revalidate: 60 * 60,
         },
         headers: {
           Authorization: `${process.env.BACKEND_AUTH_TOKEN}`,

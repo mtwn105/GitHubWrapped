@@ -9,7 +9,7 @@ export const getAllUsers = async () => {
         Authorization: `${process.env.BACKEND_AUTH_TOKEN}`,
       },
       next: {
-        revalidate: 10 * 60,
+        revalidate: 60 * 60,
       },
     }
   );
