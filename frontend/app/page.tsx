@@ -2,7 +2,7 @@
 
 import { WavyBackground } from "@/components/ui/wavy-background";
 import { useRouter } from "next/navigation";
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { generateWrapped } from "./actions/stats-action";
 import { useToast } from "@/components/ui/toaster";
 import { TopUser } from "@/types/topUser";
