@@ -2,13 +2,14 @@
 
 import { WavyBackground } from "@/components/ui/wavy-background";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { generateWrapped } from "./actions/stats-action";
 import { useToast } from "@/components/ui/toaster";
 import { TopUser } from "@/types/topUser";
 import { getTopUsers } from "./actions/top-user-action";
 import Image from "next/image";
 import { useOpenPanel } from "@openpanel/nextjs";
+
 export default function Home() {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,29 +19,30 @@ export default function Home() {
   const { toast } = useToast();
   const op = useOpenPanel();
 
-  useEffect(() => {
-    const fetchTopUsers = async () => {
-      try {
-        const response = await getTopUsers();
-        if (response.error) {
-          toast(response.error, "error");
-          return;
-        }
-        console.log(response.data);
-        setTopUsers(response.data ?? []);
-      } catch (err) {
-        console.error("Error fetching top users:", err);
-        toast("Failed to fetch top users", "error");
+  const fetchTopUsers = useCallback(async () => {
+    try {
+      const response = await getTopUsers();
+      if (response.error) {
+        toast(response.error, "error");
+        return;
       }
-    };
+      setTopUsers(response.data ?? []);
+    } catch (err) {
+      console.error("Error fetching top users:", err);
+      toast("Failed to fetch top users", "error");
+    }
+  }, [toast]);
 
+  useEffect(() => {
     fetchTopUsers();
-  }, []);
+  }, [fetchTopUsers]);
 
-  const handleGenerate = async () => {
+  const handleGenerate = useCallback(async () => {
+    if (!username.trim()) return;
+
     setLoading(true);
     op.track("generate_wrapped", { username });
-    console.log("Generating wrapped for", username);
+
     try {
       const response = await generateWrapped(username);
       if (response.error) {
@@ -58,7 +60,33 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [username, op, toast, router]);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter") {
+        handleGenerate();
+      }
+    },
+    [handleGenerate]
+  );
+
+  const handleGitHubClick = useCallback(() => {
+    window.open("https://github.com/mtwn105/GitHubWrapped", "_blank");
+  }, []);
+
+  const handleShareOnX = useCallback(() => {
+    op.track("share_on_x", { location: "home" });
+    window.open(
+      "https://twitter.com/intent/tweet?text=Create your GitHub Wrapped for 2024!%20%23GitHubWrapped&url=https://githubwrapped.xyz",
+      "_blank"
+    );
+  }, [op]);
+
+  const scrollToTopProfiles = useCallback(() => {
+    const element = document.getElementById("top-profiles");
+    element?.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black px-4 py-8 md:px-0">
@@ -73,11 +101,7 @@ export default function Home() {
           <input
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleGenerate();
-              }
-            }}
+            onKeyDown={handleKeyDown}
             type="text"
             placeholder="Enter GitHub username"
             className="px-4 py-2 mt-8 w-full max-w-[300px] text-sm rounded-md border border-white/20 bg-white/10 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20"
@@ -101,9 +125,7 @@ export default function Home() {
         </div>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
           <button
-            onClick={() =>
-              window.open("https://github.com/mtwn105/GitHubWrapped", "_blank")
-            }
+            onClick={handleGitHubClick}
             className="inline-flex h-10 items-center justify-center rounded-md bg-white/10 px-6 sm:px-8 text-sm font-medium text-white transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 active:scale-95 border border-white/20 w-full sm:w-auto"
           >
             <svg
@@ -117,13 +139,7 @@ export default function Home() {
             Star us on GitHub
           </button>
           <button
-            onClick={() => {
-              op.track("share_on_x", { location: "home" });
-              window.open(
-                "https://twitter.com/intent/tweet?text=Create your GitHub Wrapped for 2024!%20%23GitHubWrapped&url=https://githubwrapped.xyz",
-                "_blank"
-              );
-            }}
+            onClick={handleShareOnX}
             className="inline-flex h-10 items-center justify-center rounded-md bg-white/10 px-6 sm:px-8 text-sm font-medium text-white transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 active:scale-95 border border-white/20 w-full sm:w-auto"
           >
             <svg
@@ -139,10 +155,7 @@ export default function Home() {
         </div>
         <div className="flex justify-center mt-8">
           <button
-            onClick={() => {
-              const element = document.getElementById("top-profiles");
-              element?.scrollIntoView({ behavior: "smooth" });
-            }}
+            onClick={scrollToTopProfiles}
             className="inline-flex h-10 items-center justify-center rounded-md bg-white/10 px-6 sm:px-8 text-sm font-medium text-white transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 active:scale-95 border border-white/20"
           >
             <svg

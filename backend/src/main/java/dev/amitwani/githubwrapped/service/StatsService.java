@@ -1,5 +1,6 @@
 package dev.amitwani.githubwrapped.service;
 
+import dev.amitwani.githubwrapped.dto.AllUserDTO;
 import dev.amitwani.githubwrapped.dto.ResponseDTO;
 import dev.amitwani.githubwrapped.dto.StatsDTO;
 import dev.amitwani.githubwrapped.dto.TopUserDTO;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class StatsService {
@@ -225,4 +227,7 @@ public class StatsService {
 
         return topUserList;
     }
+
+    public List<AllUserDTO> getAllUsers() {
+        return gitHubUserRepository.findAllUsername();   }
 }

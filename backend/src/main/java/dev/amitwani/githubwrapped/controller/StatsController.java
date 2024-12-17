@@ -1,5 +1,6 @@
 package dev.amitwani.githubwrapped.controller;
 
+import dev.amitwani.githubwrapped.dto.AllUserDTO;
 import dev.amitwani.githubwrapped.dto.ResponseDTO;
 import dev.amitwani.githubwrapped.dto.StatsDTO;
 import dev.amitwani.githubwrapped.dto.TopUserDTO;
@@ -42,6 +43,13 @@ public class StatsController {
         LOGGER.info("Received request to fetch top users");
         List<TopUserDTO> topUsers = statsService.getTopUsers();
         return ResponseEntity.ok(new ResponseDTO("Top users fetched successfully", topUsers));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<ResponseDTO> getAllUsers() {
+        LOGGER.info("Received request to fetch all users");
+        List<AllUserDTO> allUserDTOS = statsService.getAllUsers();
+        return ResponseEntity.ok(new ResponseDTO("All users fetched successfully", allUserDTOS));
     }
 
 }

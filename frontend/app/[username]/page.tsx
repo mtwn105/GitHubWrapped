@@ -25,20 +25,44 @@ export async function generateMetadata({
 }: {
   params: { username: string };
 }): Promise<Metadata> {
-  // read route params
-  const username = (await params).username;
-
-  // fetch data
+  const username = params.username;
   const stats = await getStats(username);
 
+  if (!stats?.data) {
+    return {
+      title: "User Not Found",
+      description: "This GitHub profile could not be found.",
+    };
+  }
+
+  const { user } = stats.data;
+
   return {
-    title: stats?.data?.user?.name + " | GitHub Wrapped 2024",
+    title: `${user.name || username}'s GitHub Wrapped 2024`,
+    description: `Check out ${
+      user.name || username
+    }'s GitHub contributions and coding stats for 2024. ${user.bio || ""}`,
     openGraph: {
+      title: `${user.name || username}'s GitHub Wrapped 2024`,
+      description: `Check out ${
+        user.name || username
+      }'s GitHub contributions and coding stats for 2024`,
       images: [
         {
           url: `/api/${username}/og`,
+          width: 1200,
+          height: 630,
+          alt: `${user.name || username}'s GitHub Wrapped 2024`,
         },
       ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${user.name || username}'s GitHub Wrapped 2024`,
+      description: `Check out ${
+        user.name || username
+      }'s GitHub contributions and coding stats for 2024`,
+      images: [`/api/${username}/og`],
     },
   };
 }

@@ -12,8 +12,44 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "GitHub Wrapped 2024",
-  description: "Your Year in Code 2024",
+  title: {
+    default: "GitHub Wrapped 2024",
+    template: "%s | GitHub Wrapped",
+  },
+  description:
+    "Your Year in Code 2024 - View your GitHub contributions, stats, and coding journey for 2024.",
+  keywords: [
+    "github",
+    "developer",
+    "coding",
+    "contributions",
+    "stats",
+    "wrapped",
+    "2024",
+  ],
+  authors: [{ name: "GitHub Wrapped Team" }],
+  creator: "GitHub Wrapped Team",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "GitHub Wrapped 2024",
+  },
+  twitter: {
+    card: "summary_large_image",
+    creator: "@mtwn105",
+    site: "@mtwn105",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({
@@ -23,6 +59,9 @@ export default function RootLayout({
 }>) {
   return (
     <html suppressHydrationWarning lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
       <body className={`${geistMono.className} antialiased`}>
         <ToasterProvider>
           <OpenPanelComponent

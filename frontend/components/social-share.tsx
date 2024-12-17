@@ -1,22 +1,24 @@
 "use client";
 
 import { useOpenPanel } from "@openpanel/nextjs";
+import { useCallback } from "react";
 
 export default function SocialShare({ username }: { username: string }) {
   const op = useOpenPanel();
+
+  const handleShare = useCallback(() => {
+    op.track("share_on_x", { location: "wrapped_page", username });
+    window.open(
+      `https://x.com/intent/tweet?text=Check out my GitHub Wrapped for 2024! %23GitHubWrapped&url=https://githubwrapped.xyz/${username}`,
+      "_blank"
+    );
+  }, [op, username]);
 
   return (
     <div className="fixed bottom-8 left-8 flex gap-4 z-50">
       <button
         id="twitter-share-button"
-        onClick={async () => {
-          op.track("share_on_x", { location: "wrapped_page", username });
-          // Tweet with the image
-          window.open(
-            `https://x.com/intent/tweet?text=Check out my GitHub Wrapped for 2024! %23GitHubWrapped&url=https://githubwrapped.xyz/${username}`,
-            "_blank"
-          );
-        }}
+        onClick={handleShare}
         className="fixed left-8 bottom-8 bg-white text-black px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold shadow-lg hover:bg-white/90 transition-all duration-300 z-50 flex items-center text-sm md:text-base"
       >
         <svg
