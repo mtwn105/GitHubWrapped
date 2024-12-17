@@ -14,34 +14,52 @@ export default function ProfileHeader({
   return (
     <div
       onClick={() => window.open(`https://github.com/${username}`, "_blank")}
-      className="bg-black/50 backdrop-blur-sm border border-white/[0.08] rounded-lg p-6 mb-8 hover:scale-105 transition-all duration-300 hover:cursor-pointer hover:bg-white/10"
+      className="bg-black/50 backdrop-blur-sm border border-white/[0.08] rounded-lg p-4 md:p-6 mb-6 md:mb-8 hover:scale-105 transition-all duration-300 hover:cursor-pointer hover:bg-white/10"
     >
-      <div className="flex flex-col md:flex-row items-center gap-6">
+      <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
         <Image
           src={user.avatarUrl}
           alt={user.username || ""}
-          width={120}
-          height={120}
-          className="rounded-full"
+          width={96}
+          height={96}
+          className="rounded-full md:w-[120px] md:h-[120px]"
         />
-        <div className="text-center md:text-left ">
-          <h1 className="text-4xl font-bold mb-2">{user.name || username}</h1>
-          {user.bio && <p className="text-muted-foreground mb-4">{user.bio}</p>}
-          <div className="flex flex-wrap gap-4">
+        <div className="text-center md:text-left w-full">
+          <h1 className="text-2xl md:text-4xl font-bold mb-2">
+            {user.name || username}
+          </h1>
+          {user.bio && (
+            <p className="text-sm md:text-base text-muted-foreground mb-4">
+              {user.bio}
+            </p>
+          )}
+          <div className="flex flex-wrap justify-center md:justify-start gap-3 md:gap-4">
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4" />
-              <span className="font-semibold">{user.followers}</span>
-              <span className="text-muted-foreground">Followers</span>
+              <span className="font-semibold text-sm md:text-base">
+                {user.followers}
+              </span>
+              <span className="text-muted-foreground text-sm md:text-base">
+                Followers
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <UserPlus className="w-4 h-4" />
-              <span className="font-semibold">{user.following}</span>
-              <span className="text-muted-foreground">Following</span>
+              <span className="font-semibold text-sm md:text-base">
+                {user.following}
+              </span>
+              <span className="text-muted-foreground text-sm md:text-base">
+                Following
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <BookMarked className="w-4 h-4" />
-              <span className="font-semibold">{user.publicRepos}</span>
-              <span className="text-muted-foreground">Repositories</span>
+              <span className="font-semibold text-sm md:text-base">
+                {user.publicRepos}
+              </span>
+              <span className="text-muted-foreground text-sm md:text-base">
+                Repos
+              </span>
             </div>
           </div>
         </div>
