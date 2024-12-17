@@ -140,6 +140,7 @@ export default async function GitHubWrapped({
           {username}
         </p>
         <Link
+          data-track="generate_github_wrapped"
           className="text-white text-base font-semibold md:text-lg mt-8 underline"
           href={`/`}
         >
@@ -290,14 +291,15 @@ export default async function GitHubWrapped({
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
               <div className="flex items-center gap-3">
                 <div className="flex flex-col">
-                  <a
+                  <Link
+                    data-track="top_repository_click"
                     href={`https://github.com/${githubStats.topRepository?.name}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-medium hover:underline text-xs md:text-base"
                   >
                     {githubStats.topRepository?.name}
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className="flex items-center gap-4">
@@ -333,7 +335,8 @@ export default async function GitHubWrapped({
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
               {user.pinnedRepositories.map((repo) => (
-                <a
+                <Link
+                  data-track="pinned_repository_click"
                   key={repo.name}
                   href={repo.url || "#"}
                   target="_blank"
@@ -377,7 +380,7 @@ export default async function GitHubWrapped({
                       </div>
                     )}
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
           </div>

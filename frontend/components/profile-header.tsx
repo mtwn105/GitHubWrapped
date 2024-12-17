@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { User } from "@/types/stats";
 import { Users, UserPlus, BookMarked } from "lucide-react";
+import { useOpenPanel } from "@openpanel/nextjs";
 
 export default function ProfileHeader({
   user,
@@ -11,6 +12,8 @@ export default function ProfileHeader({
   user: User;
   username: string;
 }) {
+  const op = useOpenPanel();
+
   // Add JSON-LD structured data
   const jsonLd = {
     "@context": "https://schema.org",
@@ -30,7 +33,10 @@ export default function ProfileHeader({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div
-        onClick={() => window.open(`https://github.com/${username}`, "_blank")}
+        onClick={() => {
+          op.track("profile_header_github_click");
+          window.open(`https://github.com/${username}`, "_blank");
+        }}
         className="bg-black/50 backdrop-blur-sm border border-white/[0.08] rounded-lg p-4 md:p-6 mb-6 md:mb-8 hover:scale-105 transition-all duration-300 hover:cursor-pointer hover:bg-white/10"
       >
         <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">

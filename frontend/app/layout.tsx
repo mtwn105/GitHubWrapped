@@ -65,7 +65,7 @@ export default function RootLayout({
       <body className={`${geistMono.className} antialiased`}>
         <ToasterProvider>
           <OpenPanelComponent
-            clientId="144c8c17-5ffe-4503-a82f-15a614dab5dd"
+            clientId={process.env.NEXT_PUBLIC_OPENPANEL_CLIENTID!}
             trackScreenViews={true}
             trackAttributes={true}
           />
