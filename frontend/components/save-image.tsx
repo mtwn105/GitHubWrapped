@@ -2,12 +2,16 @@
 
 import html2canvas from "html2canvas";
 import { DownloadIcon } from "lucide-react";
+import { useOpenPanel } from "@openpanel/nextjs";
 
 export default function SaveImageButton() {
+  const op = useOpenPanel();
+
   return (
     <button
       id="save-image-btn"
       onClick={async () => {
+        op.track("save_image_start");
         // Hide the navbar
         const navbar = document.getElementById("navbar-div");
         if (navbar) navbar.style.visibility = "hidden";
@@ -30,7 +34,7 @@ export default function SaveImageButton() {
         document.body.appendChild(watermark);
 
         // Set fixed dimensions for consistent output
-        const FIXED_WIDTH = 1200;
+        const FIXED_WIDTH = 1400;
         const FIXED_HEIGHT = 630;
 
         // Capture the screenshot with fixed dimensions
@@ -74,6 +78,7 @@ export default function SaveImageButton() {
         link.href = dataURL;
         link.download = "github-wrapped.png";
         link.click();
+        op.track("save_image_complete");
       }}
       className="fixed bottom-8 right-8 bg-white text-black px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold shadow-lg hover:bg-white/90 transition-all duration-300 z-50 text-sm md:text-base"
     >

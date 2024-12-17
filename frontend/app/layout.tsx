@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Footer from "@/components/footer";
 import { ToasterProvider } from "@/components/ui/toaster";
+import { OpenPanelComponent } from "@openpanel/nextjs";
 
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
@@ -24,6 +25,11 @@ export default function RootLayout({
     <html suppressHydrationWarning lang="en">
       <body className={`${geistMono.className} antialiased`}>
         <ToasterProvider>
+          <OpenPanelComponent
+            clientId="144c8c17-5ffe-4503-a82f-15a614dab5dd"
+            trackScreenViews={true}
+            trackAttributes={true}
+          />
           {children}
           <Footer />
         </ToasterProvider>

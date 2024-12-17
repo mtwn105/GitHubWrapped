@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@openpanel/nextjs": "^1.0.7",
     "@radix-ui/react-slot": "^1.1.1",
     "@vercel/og": "^0.6.4",
     "class-variance-authority": "^0.7.1",

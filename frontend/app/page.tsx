@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/toaster";
 import { TopUser } from "@/types/topUser";
 import { getTopUsers } from "./actions/top-user-action";
 import Image from "next/image";
+import { useOpenPanel } from "@openpanel/nextjs";
 export default function Home() {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,6 +16,7 @@ export default function Home() {
 
   const router = useRouter();
   const { toast } = useToast();
+  const op = useOpenPanel();
 
   useEffect(() => {
     const fetchTopUsers = async () => {
@@ -37,16 +39,20 @@ export default function Home() {
 
   const handleGenerate = async () => {
     setLoading(true);
+    op.track("generate_wrapped", { username });
     console.log("Generating wrapped for", username);
     try {
       const response = await generateWrapped(username);
       if (response.error) {
+        op.track("generate_wrapped_error", { username, error: response.error });
         toast(response.error, "error");
       } else {
+        op.track("generate_wrapped_success", { username });
         toast("Successfully generated wrapped!", "success");
         router.push(`/${username}`);
       }
     } catch (error) {
+      op.track("generate_wrapped_error", { username, error: "Unknown error" });
       console.error("Error generating wrapped:", error);
       toast("Error generating wrapped", "error");
     } finally {
@@ -55,15 +61,15 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center bg-black">
-      <WavyBackground className="max-w-4xl mx-auto  ">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-black px-4 py-8 md:px-0">
+      <WavyBackground className="w-full max-w-4xl mx-auto">
         <p className="text-4xl md:text-7xl text-white font-bold inter-var text-center">
           GitHub Wrapped
         </p>
-        <p className="text-xl md:text-2xl mt-4 text-white font-normal inter-var text-center">
+        <p className="text-lg sm:text-xl md:text-2xl mt-4 text-white font-normal inter-var text-center">
           Your Year in Code 2024
         </p>
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center w-full">
           <input
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -74,10 +80,10 @@ export default function Home() {
             }}
             type="text"
             placeholder="Enter GitHub username"
-            className="px-4 py-2 mt-8 w-64 text-sm rounded-md border border-white/20 bg-white/10 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20"
+            className="px-4 py-2 mt-8 w-full max-w-[300px] text-sm rounded-md border border-white/20 bg-white/10 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20"
           />
           <button
-            className="mt-4 inline-flex h-10 items-center justify-center rounded-md bg-white px-8 text-sm font-medium text-black transition-colors hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-white/20 active:scale-95"
+            className="mt-4 inline-flex h-10 items-center justify-center rounded-md bg-white px-6 sm:px-8 text-sm font-medium text-black transition-colors hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-white/20 active:scale-95 w-full max-w-[300px]"
             onClick={handleGenerate}
           >
             Generate Wrapped
@@ -87,18 +93,18 @@ export default function Home() {
               <p className="text-sm text-white/80 mt-4">
                 This may take a few seconds...
               </p>
-              <div className="mt-2 h-1 w-64 overflow-hidden rounded-full bg-white/20">
+              <div className="mt-2 h-1 w-full max-w-[300px] overflow-hidden rounded-full bg-white/20">
                 <div className="h-full w-1/2 animate-[shimmer_1s_ease-in-out_infinite] bg-white/50" />
               </div>
             </>
           )}
         </div>
-        <div className="flex gap-4 justify-center mt-8">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
           <button
             onClick={() =>
               window.open("https://github.com/mtwn105/GitHubWrapped", "_blank")
             }
-            className="inline-flex h-10 items-center justify-center rounded-md bg-white/10 px-8 text-sm font-medium text-white transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 active:scale-95 border border-white/20"
+            className="inline-flex h-10 items-center justify-center rounded-md bg-white/10 px-6 sm:px-8 text-sm font-medium text-white transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 active:scale-95 border border-white/20 w-full sm:w-auto"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -111,13 +117,14 @@ export default function Home() {
             Star us on GitHub
           </button>
           <button
-            onClick={() =>
+            onClick={() => {
+              op.track("share_on_x", { location: "home" });
               window.open(
                 "https://twitter.com/intent/tweet?text=Create your GitHub Wrapped for 2024!%20%23GitHubWrapped&url=https://githubwrapped.xyz",
                 "_blank"
-              )
-            }
-            className="inline-flex h-10 items-center justify-center rounded-md bg-white/10 px-8 text-sm font-medium text-white transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 active:scale-95 border border-white/20"
+              );
+            }}
+            className="inline-flex h-10 items-center justify-center rounded-md bg-white/10 px-6 sm:px-8 text-sm font-medium text-white transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 active:scale-95 border border-white/20 w-full sm:w-auto"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -130,19 +137,42 @@ export default function Home() {
             Share us on X
           </button>
         </div>
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={() => {
+              const element = document.getElementById("top-profiles");
+              element?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="inline-flex h-10 items-center justify-center rounded-md bg-white/10 px-6 sm:px-8 text-sm font-medium text-white transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 active:scale-95 border border-white/20"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-2"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 5v14M5 12l7 7 7-7" />
+            </svg>
+            View Top Profiles
+          </button>
+        </div>
       </WavyBackground>
 
       {topUsers.length > 0 && (
-        <div className=" text-center">
-          <p className="text-2xl md:text-4xl  text-white/80">
+        <div id="top-profiles" className="text-center w-full mt-12">
+          <p className="text-2xl md:text-4xl text-white/80">
             Top GitHub Profiles
           </p>
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto px-4">
             {topUsers.map((user) => (
               <div
                 key={user.username}
                 onClick={() => router.push(`/${user.username}`)}
-                className="group relative overflow-hidden rounded-lg bg-white/10 p-6 transition-all duration-300 hover:scale-105 hover:bg-white/20 w-[300px] cursor-pointer"
+                className="group relative overflow-hidden rounded-lg bg-white/10 p-6 transition-all duration-300 hover:scale-105 hover:bg-white/20 w-full max-w-[300px] mx-auto cursor-pointer"
               >
                 <div className="flex items-center gap-4">
                   <Image

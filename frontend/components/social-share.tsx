@@ -1,11 +1,16 @@
 "use client";
 
+import { useOpenPanel } from "@openpanel/nextjs";
+
 export default function SocialShare({ username }: { username: string }) {
+  const op = useOpenPanel();
+
   return (
     <div className="fixed bottom-8 left-8 flex gap-4 z-50">
       <button
         id="twitter-share-button"
         onClick={async () => {
+          op.track("share_on_x", { location: "wrapped_page", username });
           // Tweet with the image
           window.open(
             `https://x.com/intent/tweet?text=Check out my GitHub Wrapped for 2024! %23GitHubWrapped&url=https://githubwrapped.xyz/${username}`,
