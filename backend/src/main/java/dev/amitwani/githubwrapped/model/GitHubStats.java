@@ -1,6 +1,5 @@
 package dev.amitwani.githubwrapped.model;
 
-import dev.amitwani.githubwrapped.dto.graphql.GitHubContributionStats;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

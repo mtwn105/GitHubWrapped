@@ -3,9 +3,6 @@ package dev.amitwani.githubwrapped.dto.graphql;
 import dev.amitwani.githubwrapped.model.GitHubStats;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.Date;
-
 @Data
 public class GitHubContributionStats {
 

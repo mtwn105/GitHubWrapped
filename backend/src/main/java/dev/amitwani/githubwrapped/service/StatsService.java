@@ -144,8 +144,8 @@ public class StatsService {
 
             if (topRepositoryNode != null) {
                 topRepository.setName(topRepositoryNode.getName());
-                topRepository.setTopLanguage(topRepositoryNode.getPrimaryLanguage().getName());
-                topRepository.setTopLanguageColor(topRepositoryNode.getPrimaryLanguage().getColor());
+                topRepository.setTopLanguage(topRepositoryNode.getPrimaryLanguage() != null ? topRepositoryNode.getPrimaryLanguage().getName() : null);
+                topRepository.setTopLanguageColor(topRepositoryNode.getPrimaryLanguage() != null ? topRepositoryNode.getPrimaryLanguage().getColor() : null);
                 topRepository.setStars(topRepositoryNode.getStars());
                 topRepository.setForks(topRepositoryNode.getForkCount());
                 gitHubStats.setTopRepository(topRepository);
