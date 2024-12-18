@@ -27,17 +27,31 @@ export const metadata: Metadata = {
     "wrapped",
     "2024",
   ],
-  authors: [{ name: "GitHub Wrapped Team" }],
-  creator: "GitHub Wrapped Team",
+  authors: [{ name: "Amit Wani" }],
+  creator: "Amit Wani",
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "GitHub Wrapped 2024",
+    images: [
+      {
+        url: "https://githubwrapped.xyz/github-wrapped-og.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     creator: "@mtwn105",
     site: "@mtwn105",
+    images: [
+      {
+        url: "https://githubwrapped.xyz/github-wrapped-og.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
   },
   robots: {
     index: true,
