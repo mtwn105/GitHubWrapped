@@ -19,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class StatsService {
@@ -37,7 +36,7 @@ public class StatsService {
 
     public ResponseEntity<ResponseDTO> generateGitHubStats(String username) {
         try {
-            StatsDTO statsDTO = getStats(username);
+            StatsDTO statsDTO = getStats(username.toLowerCase());
             if (statsDTO != null) {
                 LOGGER.info("User {} stats already exists", username);
                 return ResponseEntity.ok(new ResponseDTO("User stats already exists", statsDTO));
@@ -45,7 +44,7 @@ public class StatsService {
             GHUser user;
             try {
                 // Fetch User Data from GitHub
-                user = gitHubService.getGitHubUser(username);
+                user = gitHubService.getGitHubUser(username.toLowerCase());
                 LOGGER.info("Fetched user data for user: {}", user);
 
                 if (user == null) {
@@ -70,10 +69,10 @@ public class StatsService {
             gitHubUser.setPublicRepos(user.getPublicRepoCount());
             gitHubUser.setName(user.getName());
             gitHubUser.setTwitterUsername(user.getTwitterUsername());
-            gitHubUser.setUsername(user.getLogin());
+            gitHubUser.setUsername(username.toLowerCase());
 
             // Get User Pinned Repos
-            GitHubPinnedItems pinnedRepos = gitHubService.getPinnedRepos(username);
+            GitHubPinnedItems pinnedRepos = gitHubService.getPinnedRepos(username.toLowerCase());
             LOGGER.info("Fetched pinned repos for user: {}", pinnedRepos);
 
             // Save Pinned Repos
@@ -86,16 +85,16 @@ public class StatsService {
                         node.getUrl(),
                         node.getStars(),
                         node.getForkCount(),
-                        node.getPrimaryLanguage().getName(),
-                        node.getPrimaryLanguage().getColor()
+                        node.getPrimaryLanguage() != null ? node.getPrimaryLanguage().getName() : null,
+                        node.getPrimaryLanguage() != null ? node.getPrimaryLanguage().getColor() : null
                 ));
             }
 
             // Generate Stats
             GitHubStats gitHubStats = new GitHubStats();
-            gitHubStats.setUsername(username);
+            gitHubStats.setUsername(username.toLowerCase());
 
-            List<GitHubRepositoryStats.RepositoryNode> repositoryNodes = gitHubService.getRepositoryStats(username);
+            List<GitHubRepositoryStats.RepositoryNode> repositoryNodes = gitHubService.getRepositoryStats(username.toLowerCase());
 
             // Languages
             List<GitHubRepositoryStats.LanguageEdge> languageEdges = repositoryNodes
@@ -129,7 +128,7 @@ public class StatsService {
             gitHubStats.setLanguagesStats(languageStats);
 
             // Get Contribution Stats
-            GitHubContributionStats contributionStats = gitHubService.getContributionStats(username);
+            GitHubContributionStats contributionStats = gitHubService.getContributionStats(username.toLowerCase());
 
             gitHubStats.setTotalCommits(contributionStats.getData().getUser().getContributionsCollection().getCommits());
             gitHubStats.setTotalIssuesClosed(contributionStats.getData().getUser().getContributionsCollection().getIssuesClosed());
@@ -171,7 +170,7 @@ public class StatsService {
             statsDTO = new StatsDTO();
             statsDTO.setStats(gitHubStats);
             statsDTO.setUser(gitHubUser);
-            statsDTO.setUsername(username);
+            statsDTO.setUsername(username.toLowerCase());
 
             return ResponseEntity.status(201).body(new ResponseDTO("Stats generated successfully", statsDTO));
         } catch (Exception e) {
@@ -182,15 +181,22 @@ public class StatsService {
 
     public StatsDTO getStats(String username) {
 
-        GitHubUser gitHubUser = gitHubUserRepository.findByUsername(username);
-        if (gitHubUser == null) {
+        List<GitHubUser> gitHubUserList = gitHubUserRepository.findByUsername(username.toLowerCase());
+        if (gitHubUserList == null || gitHubUserList.isEmpty()) {
+            LOGGER.info("User not found for username: {}", username);
+            return null;
+        }
+
+        List<GitHubStats> gitHubStatsList = gitHubStatsRepository.findByUsername(username.toLowerCase());
+        if (gitHubStatsList == null || gitHubStatsList.isEmpty()) {
+            LOGGER.info("User stats not found for username: {}", username);
             return null;
         }
 
         StatsDTO statsDTO = new StatsDTO();
-        statsDTO.setStats(gitHubStatsRepository.findByUsername(username));
-        statsDTO.setUser(gitHubUser);
-        statsDTO.setUsername(username);
+        statsDTO.setStats(gitHubStatsList.getFirst());
+        statsDTO.setUser(gitHubUserList.getFirst());
+        statsDTO.setUsername(username.toLowerCase());
 
         return statsDTO;
     }
@@ -200,18 +206,18 @@ public class StatsService {
 
         List<TopUserDTO> topUserList = new ArrayList<>();
 
-        List<GitHubStats> gitHubStatsList = gitHubStatsRepository.findTop6By();
+        List<GitHubStats> gitHubStatsList = gitHubStatsRepository.findTop6ByOrderByTotalCommitsDesc();
 
-        LOGGER.info("Fetched top users: {}", gitHubStatsList);
+        LOGGER.info("Fetched top users: {}", gitHubStatsList.size());
 
         gitHubStatsList.forEach(gitHubStats -> {
             TopUserDTO topUser = new TopUserDTO();
             topUser.setUsername(gitHubStats.getUsername());
-            GitHubUser gitHubUser = gitHubUserRepository.findById(gitHubStats.getUserId()).orElse(null);
-            if (gitHubUser != null) {
-                topUser.setName(gitHubUser.getName());
-                topUser.setAvatarUrl(gitHubUser.getAvatarUrl());
-                topUser.setUsername(gitHubUser.getUsername());
+            List<GitHubUser> gitHubUserList = gitHubUserRepository.findByUsername(gitHubStats.getUsername().toLowerCase());
+            if (gitHubUserList != null && !gitHubUserList.isEmpty()) {
+                topUser.setName(gitHubUserList.getFirst().getName());
+                topUser.setAvatarUrl(gitHubUserList.getFirst().getAvatarUrl());
+                topUser.setUsername(gitHubUserList.getFirst().getUsername());
             }
 
             topUser.setTotalContributions(gitHubStats.getContributionCalendar().getTotalContributions());
@@ -229,5 +235,6 @@ public class StatsService {
     }
 
     public List<AllUserDTO> getAllUsers() {
-        return gitHubUserRepository.findAllUsername();   }
+        return gitHubUserRepository.findAllUsername();
+    }
 }

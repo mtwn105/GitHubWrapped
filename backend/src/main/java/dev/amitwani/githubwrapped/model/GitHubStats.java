@@ -4,6 +4,7 @@ import dev.amitwani.githubwrapped.dto.graphql.GitHubContributionStats;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -30,6 +31,8 @@ public class GitHubStats implements Serializable {
     private Repository topRepository;
     private List<LanguageStats> languagesStats = new ArrayList<>();
     private ContributionCalendar contributionCalendar;
+    @CreatedDate
+    private Date createdDate;
 
     @Data
     public static class ContributionCalendar implements Serializable {

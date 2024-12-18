@@ -12,8 +12,7 @@ import java.util.List;
 @Repository
 public interface GitHubUserRepository extends MongoRepository<GitHubUser, String> {
 
-    GitHubUser findByUsername(String username);
-    boolean existsByUsername(String username);
+    List<GitHubUser> findByUsername(String username);
     @Query(value = "{}", fields = "{ 'username' : 1, '_id' : 0 }")
     List<AllUserDTO> findAllUsername();
 }
