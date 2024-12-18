@@ -1,8 +1,9 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About",
-  description: "About GitHub Wrapped",
+  title: "About GitHub Wrapped",
+  description:
+    "Your Year in Code 2024 - View your GitHub contributions, stats, and coding journey for 2024.",
 };
 
 export default function AboutLayout({
