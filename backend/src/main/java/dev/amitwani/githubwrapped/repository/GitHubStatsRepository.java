@@ -12,7 +12,7 @@ public interface GitHubStatsRepository extends MongoRepository<GitHubStats, Stri
     GitHubStats findByUsername(String username);
 
     // Find top 6 users by commits
-    @Query(value = "{'totalCommits': {'$gt': 0}}", sort = "{'totalCommits': -1}")
+    @Query(value = "{'totalCommits': {'$gt': 0}}", sort = "{'totalCommits': -1}", limit=6)
     List<GitHubStats> findTop6By();
 
 }
