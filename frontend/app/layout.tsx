@@ -4,6 +4,7 @@ import "./globals.css";
 import Footer from "@/components/footer";
 import { ToasterProvider } from "@/components/ui/toaster";
 import { OpenPanelComponent } from "@openpanel/nextjs";
+import { CSPostHogProvider } from "./posthog";
 
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
@@ -76,17 +77,19 @@ export default function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body className={`${geistMono.className} antialiased`}>
-        <ToasterProvider>
-          <OpenPanelComponent
-            clientId={process.env.NEXT_PUBLIC_OPENPANEL_CLIENTID!}
-            trackScreenViews={true}
-            trackAttributes={true}
-          />
-          {children}
-          <Footer />
-        </ToasterProvider>
-      </body>
+      <CSPostHogProvider>
+        <body className={`${geistMono.className} antialiased`}>
+          <ToasterProvider>
+            <OpenPanelComponent
+              clientId={process.env.NEXT_PUBLIC_OPENPANEL_CLIENTID!}
+              trackScreenViews={true}
+              trackAttributes={true}
+            />
+            {children}
+            <Footer />
+          </ToasterProvider>
+        </body>
+      </CSPostHogProvider>
     </html>
   );
 }

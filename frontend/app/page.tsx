@@ -9,6 +9,7 @@ import { TopUser } from "@/types/topUser";
 import { getTopUsers } from "./actions/top-user-action";
 import Image from "next/image";
 import { useOpenPanel } from "@openpanel/nextjs";
+import Link from "next/link";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -123,6 +124,24 @@ export default function Home() {
             </>
           )}
         </div>
+        <div className="mt-4 flex justify-center">
+          <Link
+            href="https://www.producthunt.com/posts/github-wrapped-2024-your-year-in-code?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-github&#0045;wrapped&#0045;2024&#0045;your&#0045;year&#0045;in&#0045;code"
+            target="_blank"
+          >
+            <img
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=725764&theme=light"
+              alt="GitHub Wrapped 2024 – Your Year in Code - Your GitHub journey with a personalized year in code | Product Hunt"
+              style={{
+                width: "250px",
+                height: "54px",
+                fill: "#00FF00",
+              }}
+              width="250"
+              height="54"
+            />
+          </Link>
+        </div>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
           <button
             onClick={handleGitHubClick}
@@ -189,7 +208,7 @@ export default function Home() {
               >
                 <div className="flex items-center gap-4">
                   <Image
-                    src={user.avatarUrl}
+                    src={user.avatarUrl || "/default-avatar.png"}
                     alt={user.username}
                     width={64}
                     height={64}

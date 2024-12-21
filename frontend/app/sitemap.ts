@@ -8,6 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const topUsers = topUsersResponse.data || [];
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://githubwrapped.xyz';
 
+
     const staticRoutes = [{
       url: baseUrl,
       lastModified: new Date(),
