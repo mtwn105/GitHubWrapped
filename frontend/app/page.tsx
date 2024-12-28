@@ -73,8 +73,9 @@ export default function Home() {
   );
 
   const handleGitHubClick = useCallback(() => {
+    op.track("github_star_click", { location: "home" });
     window.open("https://github.com/mtwn105/GitHubWrapped", "_blank");
-  }, []);
+  }, [op]);
 
   const handleShareOnX = useCallback(() => {
     op.track("share_on_x", { location: "home" });
@@ -85,9 +86,10 @@ export default function Home() {
   }, [op]);
 
   const scrollToTopProfiles = useCallback(() => {
+    op.track("top_profiles_click", { location: "home" });
     const element = document.getElementById("top-profiles");
     element?.scrollIntoView({ behavior: "smooth" });
-  }, []);
+  }, [op]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black px-4 py-8 md:px-0">
@@ -130,6 +132,7 @@ export default function Home() {
             target="_blank"
           >
             <img
+              data-track="producet_hunt_click"
               src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=725764&theme=light"
               alt="GitHub Wrapped 2024 – Your Year in Code - Your GitHub journey with a personalized year in code | Product Hunt"
               style={{
