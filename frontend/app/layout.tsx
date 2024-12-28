@@ -5,6 +5,7 @@ import Footer from "@/components/footer";
 import { ToasterProvider } from "@/components/ui/toaster";
 import { OpenPanelComponent } from "@openpanel/nextjs";
 import { CSPostHogProvider } from "./posthog";
+import DonateButton from "@/components/donate-button";
 
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
@@ -86,6 +87,7 @@ export default function RootLayout({
               trackAttributes={true}
             />
             {children}
+            <DonateButton />
             <Footer />
           </ToasterProvider>
         </body>
