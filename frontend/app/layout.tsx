@@ -14,6 +14,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://githubwrapped.xyz"),
   title: {
     default: "GitHub Wrapped 2024",
     template: "%s | GitHub Wrapped",

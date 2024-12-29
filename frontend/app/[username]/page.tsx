@@ -32,6 +32,7 @@ export async function generateMetadata({
 
   if (!stats?.data) {
     return {
+      metadataBase: new URL("https://githubwrapped.xyz"),
       title: "User Not Found",
       description: "This GitHub profile could not be found.",
     };
@@ -40,6 +41,7 @@ export async function generateMetadata({
   const { user } = stats.data;
 
   return {
+    metadataBase: new URL("https://githubwrapped.xyz"),
     title: `${user.name || username}'s GitHub Wrapped 2024`,
     description: `Check out ${
       user.name || username
