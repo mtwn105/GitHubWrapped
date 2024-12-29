@@ -79,7 +79,7 @@ function ContributionDay({ day }: { day: ContributionDayType }) {
         backgroundColor:
           day.color === "#ebedf0" ? "#222" : day.color || "#161b22",
       }}
-      title={`${day.contributionCount} contributions on ${day.date}`}
+      title={`${day.contributionCount} contributions on ${day.date?.split('T')[0]}`}
     />
   );
 }
