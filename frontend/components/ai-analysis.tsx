@@ -4,13 +4,13 @@ import { useState } from "react";
 import { Sparkles } from "lucide-react";
 import { Data } from "@/types/stats";
 import ReactMarkdown from "react-markdown";
-import { useOpenPanel } from "@openpanel/nextjs";
+import { useUmami } from "@/lib/umami";
 
 export default function AIAnalysis({ data }: { data: Data }) {
   const [analysis, setAnalysis] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const op = useOpenPanel();
+  const op = useUmami();
 
   const handleGenerateAnalysis = async () => {
     op.track("ai_analysis_generate");

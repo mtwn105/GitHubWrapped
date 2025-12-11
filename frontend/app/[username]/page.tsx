@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import SocialShare from "@/components/social-share";
 import { getStats } from "../actions/stats-action";
-import { IdentifyComponent } from "@openpanel/nextjs";
+import { UmamiIdentify } from "@/components/umami-identify";
 import AIAnalysis from "@/components/ai-analysis";
 
 export async function generateMetadata({
@@ -79,7 +79,9 @@ function ContributionDay({ day }: { day: ContributionDayType }) {
         backgroundColor:
           day.color === "#ebedf0" ? "#222" : day.color || "#161b22",
       }}
-      title={`${day.contributionCount} contributions on ${day.date?.split('T')[0]}`}
+      title={`${day.contributionCount} contributions on ${
+        day.date?.split("T")[0]
+      }`}
     />
   );
 }
@@ -158,7 +160,7 @@ export default async function GitHubWrapped({
 
   return (
     <>
-      <IdentifyComponent
+      <UmamiIdentify
         profileId={username}
         firstName={user.name || ""}
         properties={{

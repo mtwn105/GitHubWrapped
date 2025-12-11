@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { User } from "@/types/stats";
 import { Users, UserPlus, BookMarked } from "lucide-react";
-import { useOpenPanel } from "@openpanel/nextjs";
+import { useUmami } from "@/lib/umami";
 
 export default function ProfileHeader({
   user,
@@ -12,7 +12,7 @@ export default function ProfileHeader({
   user: User;
   username: string;
 }) {
-  const op = useOpenPanel();
+  const op = useUmami();
 
   // Add JSON-LD structured data
   const jsonLd = {

@@ -25,7 +25,7 @@ Your personalized year in review for GitHub contributions and coding activity. V
 - TypeScript
 - Tailwind CSS
 - Shadcn UI Components
-- OpenPanel for analytics
+- Umami for analytics
 - Server Actions for API calls
 
 ### Backend
@@ -69,9 +69,8 @@ pnpm install
 BACKEND_URL=http://localhost:9009
 BACKEND_AUTH_TOKEN=your_auth_token
 NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_OPENPANEL_CLIENTID=your_openpanel_client_id
-OPENPANEL_CLIENTID=your_openpanel_client_id
-OPENPANEL_CLIENT_SECRET=your_openpanel_client_secret
+NEXT_PUBLIC_UMAMI_URL=https://your-umami-instance.com
+NEXT_PUBLIC_UMAMI_WEBSITE_ID=your_umami_website_id
 ```
 
 4. Run development server

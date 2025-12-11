@@ -2,11 +2,11 @@
 
 import html2canvas from "html2canvas";
 import { DownloadIcon } from "lucide-react";
-import { useOpenPanel } from "@openpanel/nextjs";
+import { useUmami } from "@/lib/umami";
 import { useCallback } from "react";
 
 export default function SaveImageButton() {
-  const op = useOpenPanel();
+  const op = useUmami();
 
   const handleSaveImage = useCallback(async () => {
     op.track("save_image_start");

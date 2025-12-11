@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/toaster";
 import { TopUser } from "@/types/topUser";
 import { getTopUsers } from "./actions/top-user-action";
 import Image from "next/image";
-import { useOpenPanel } from "@openpanel/nextjs";
+import { useUmami } from "@/lib/umami";
 import Link from "next/link";
 
 export default function Home() {
@@ -18,7 +18,7 @@ export default function Home() {
 
   const router = useRouter();
   const { toast } = useToast();
-  const op = useOpenPanel();
+  const op = useUmami();
 
   const fetchTopUsers = useCallback(async () => {
     try {

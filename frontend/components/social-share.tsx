@@ -1,10 +1,10 @@
 "use client";
 
-import { useOpenPanel } from "@openpanel/nextjs";
+import { useUmami } from "@/lib/umami";
 import { useCallback } from "react";
 
 export default function SocialShare({ username }: { username: string }) {
-  const op = useOpenPanel();
+  const op = useUmami();
 
   const handleShare = useCallback(() => {
     op.track("share_on_x", { location: "wrapped_page", username });

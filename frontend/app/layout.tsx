@@ -3,9 +3,9 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Footer from "@/components/footer";
 import { ToasterProvider } from "@/components/ui/toaster";
-import { OpenPanelComponent } from "@openpanel/nextjs";
 import { CSPostHogProvider } from "./posthog";
 import DonateButton from "@/components/donate-button";
+import Script from "next/script";
 
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
@@ -74,19 +74,24 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const umamiUrl = process.env.NEXT_PUBLIC_UMAMI_URL;
+  const umamiWebsiteId = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
+
   return (
     <html suppressHydrationWarning lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {umamiUrl && umamiWebsiteId && (
+          <Script
+            defer
+            src={`${umamiUrl}/script.js`}
+            data-website-id={umamiWebsiteId}
+          />
+        )}
       </head>
       <CSPostHogProvider>
         <body className={`${geistMono.className} antialiased`}>
           <ToasterProvider>
-            <OpenPanelComponent
-              clientId={process.env.NEXT_PUBLIC_OPENPANEL_CLIENTID!}
-              trackScreenViews={true}
-              trackAttributes={true}
-            />
             {children}
             <DonateButton />
             <Footer />

@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@openpanel/nextjs": "^1.0.7",
     "@openrouter/ai-sdk-provider": "^0.0.6",
     "@radix-ui/react-slot": "^1.1.1",
     "@vercel/og": "^0.6.4",
