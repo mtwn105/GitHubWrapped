@@ -6,7 +6,6 @@ import SaveImageButton from "@/components/save-image";
 import {
   ContributionCalendar,
   ContributionDay as ContributionDayType,
-  StatsResponse,
   Week,
 } from "@/types/stats";
 import Link from "next/link";
@@ -21,6 +20,8 @@ import SocialShare from "@/components/social-share";
 import { getStats } from "../actions/stats-action";
 import { UmamiIdentify } from "@/components/umami-identify";
 import AIAnalysis from "@/components/ai-analysis";
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -72,6 +73,13 @@ export async function generateMetadata({
 }
 
 function ContributionDay({ day }: { day: ContributionDayType }) {
+  // Handle both Date objects and ISO strings
+  const dateStr = day.date
+    ? typeof day.date === "string"
+      ? day.date.split("T")[0]
+      : new Date(day.date).toISOString().split("T")[0]
+    : "";
+
   return (
     <div
       className="w-[10px] h-[10px] md:w-2.5 md:h-2.5 rounded-sm text-white/[0.08]"
@@ -79,9 +87,7 @@ function ContributionDay({ day }: { day: ContributionDayType }) {
         backgroundColor:
           day.color === "#ebedf0" ? "#222" : day.color || "#161b22",
       }}
-      title={`${day.contributionCount} contributions on ${
-        day.date?.split("T")[0]
-      }`}
+      title={`${day.contributionCount} contributions on ${dateStr}`}
     />
   );
 }
@@ -134,7 +140,7 @@ export default async function GitHubWrapped({
   params: { username: string };
 }) {
   const { username } = params;
-  const stats: StatsResponse = await getStats(username);
+  const stats = await getStats(username);
 
   if (!stats?.data) {
     return (

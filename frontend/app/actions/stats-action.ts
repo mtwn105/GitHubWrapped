@@ -1,44 +1,40 @@
 "use server";
 
+import {
+  getStats as getStatsService,
+  generateGitHubStats,
+} from "@/lib/services/stats-service";
+
 export const generateWrapped = async (username: string) => {
-  const response = await fetch(
-    `${process.env.BACKEND_URL}/api/stats/${username}`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `${process.env.BACKEND_AUTH_TOKEN}`,
-      },
+  try {
+    const result = await generateGitHubStats(username);
+
+    if (result.status === 404) {
+      return { error: "Invalid GitHub username" };
     }
-  );
-  if (response.ok) {
-    return response.json();
-  } else if (response.status === 404) {
-    return { error: "Invalid GitHub username" };
-  } else {
+
+    if (result.status >= 400) {
+      return { error: "Error generating wrapped" };
+    }
+
+    return { message: result.message, data: result.data };
+  } catch (error) {
+    console.error("Error generating wrapped:", error);
     return { error: "Error generating wrapped" };
   }
 };
 
 export const getStats = async (username: string) => {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/stats/${username}`,
-      {
-        next: {
-          revalidate: 60 * 60,
-        },
-        headers: {
-          Authorization: `${process.env.BACKEND_AUTH_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (response.ok) {
-      const data = await response.json();
-      return data;
+    const statsDTO = await getStatsService(username);
+
+    if (!statsDTO) {
+      return null;
     }
+
+    return { message: "Stats fetched successfully", data: statsDTO };
   } catch (error) {
     console.error("Error fetching stats:", error);
+    return null;
   }
-  return null;
 };
