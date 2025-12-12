@@ -1,21 +1,13 @@
 "use server";
 
+import { getAllUsers as getAllUsersService } from "@/lib/services/stats-service";
+
 export const getAllUsers = async () => {
-  const response = await fetch(
-    `${process.env.BACKEND_URL}/api/stats/all`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `${process.env.BACKEND_AUTH_TOKEN}`,
-      },
-      next: {
-        revalidate: 60 * 60,
-      },
-    }
-  );
-  if (response.ok) {
-    return response.json();
-  } else {
-    return { error: "Error fetching top users" };
+  try {
+    const allUsers = await getAllUsersService();
+    return { message: "All users fetched successfully", data: allUsers };
+  } catch (error) {
+    console.error("Error fetching all users:", error);
+    return { error: "Error fetching all users" };
   }
 };

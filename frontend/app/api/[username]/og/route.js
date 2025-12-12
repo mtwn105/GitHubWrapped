@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
-import { getStats } from "@/app/actions/stats-action";
 
 export const runtime = "edge";
+
 async function loadGoogleFont(font, text) {
   const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(
     text
@@ -20,6 +20,15 @@ async function loadGoogleFont(font, text) {
 
   throw new Error("failed to load font data");
 }
+
+async function getStats(username, baseUrl) {
+  const response = await fetch(`${baseUrl}/api/stats/${username}`);
+  if (response.ok) {
+    return response.json();
+  }
+  return null;
+}
+
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const username = searchParams.get("username");
@@ -28,7 +37,9 @@ export async function GET(request) {
     return new Response("Username is required", { status: 400 });
   }
 
-  const stats = await getStats(username);
+  // Get the base URL from the request
+  const baseUrl = new URL(request.url).origin;
+  const stats = await getStats(username, baseUrl);
 
   if (!stats) {
     return new Response("User not found", { status: 404 });
