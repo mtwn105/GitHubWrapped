@@ -3,7 +3,6 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Footer from "@/components/footer";
 import { ToasterProvider } from "@/components/ui/toaster";
-import { CSPostHogProvider } from "./posthog";
 import DonateButton from "@/components/donate-button";
 import Script from "next/script";
 import { YEAR } from "@/lib/constants";
@@ -89,15 +88,13 @@ export default function RootLayout({
           />
         )}
       </head>
-      <CSPostHogProvider>
-        <body className={`${geistMono.className} antialiased`}>
-          <ToasterProvider>
-            {children}
-            <DonateButton />
-            <Footer />
-          </ToasterProvider>
-        </body>
-      </CSPostHogProvider>
+      <body className={`${geistMono.className} antialiased`}>
+        <ToasterProvider>
+          {children}
+          <DonateButton />
+          <Footer />
+        </ToasterProvider>
+      </body>
     </html>
   );
 }
