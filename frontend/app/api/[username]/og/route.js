@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { YEAR } from "../../../lib/constants.js";
+import { YEAR } from "@/lib/constants";
 
 export const runtime = "edge";
 
