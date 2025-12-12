@@ -4,6 +4,7 @@ import { ContributionCalendar } from "@/types/stats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+import { YEAR } from "@/lib/constants";
 
 interface ContributionBreakdownProps {
   calendar: ContributionCalendar;
@@ -27,7 +28,7 @@ export default function ContributionBreakdown({
   const monthlyContributions = Array(12)
     .fill(0)
     .map((_, index) => {
-      const month = new Date(2024, index).toLocaleString("default", {
+      const month = new Date(parseInt(YEAR), index).toLocaleString("default", {
         month: "short",
       });
       let total = 0;
@@ -45,9 +46,12 @@ export default function ContributionBreakdown({
   const dailyContributions = Array(7)
     .fill(0)
     .map((_, index) => {
-      const day = new Date(2024, 0, index + 1).toLocaleString("default", {
-        weekday: "short",
-      });
+      const day = new Date(parseInt(YEAR), 0, index + 1).toLocaleString(
+        "default",
+        {
+          weekday: "short",
+        }
+      );
       let total = 0;
       calendar.weeks.forEach((week) => {
         week.contributionDays.forEach((d) => {
@@ -111,7 +115,7 @@ export default function ContributionBreakdown({
         <Card className="bg-black/50 backdrop-blur-sm border-white/[0.08] text-white">
           <CardHeader className="p-4 md:p-6">
             <CardTitle className="text-lg md:text-xl">
-              Contributions by Month (2024)
+              Contributions by Month ({YEAR})
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 md:p-6 pt-0">
@@ -149,7 +153,7 @@ export default function ContributionBreakdown({
         <Card className="bg-black/50 backdrop-blur-sm border-white/[0.08] text-white">
           <CardHeader className="p-4 md:p-6">
             <CardTitle className="text-lg md:text-xl">
-              Contributions by Day (2024)
+              Contributions by Day ({YEAR})
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 md:p-6 pt-0">

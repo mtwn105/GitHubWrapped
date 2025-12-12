@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { YEAR } from "../../../lib/constants.js";
 
 export const runtime = "edge";
 
@@ -72,7 +73,7 @@ export async function GET(request) {
             fontFamily: "Geist Mono",
           }}
         >
-          GitHub Wrapped 2024
+          {`GitHub Wrapped ${YEAR}`}
         </div>
 
         <div
@@ -198,7 +199,7 @@ export async function GET(request) {
           name: "Geist Mono",
           data: await loadGoogleFont(
             "Geist Mono",
-            "GitHub Wrapped 2024 " + username
+            `GitHub Wrapped ${YEAR} ${username}`
           ),
           style: "normal",
         },

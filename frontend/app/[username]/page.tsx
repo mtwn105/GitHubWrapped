@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import SocialShare from "@/components/social-share";
 import { getStats } from "../actions/stats-action";
+import { YEAR } from "@/lib/constants";
 import { UmamiIdentify } from "@/components/umami-identify";
 import AIAnalysis from "@/components/ai-analysis";
 
@@ -43,30 +44,30 @@ export async function generateMetadata({
 
   return {
     metadataBase: new URL("https://githubwrapped.xyz"),
-    title: `${user.name || username}'s GitHub Wrapped 2024`,
+    title: `${user.name || username}'s GitHub Wrapped ${YEAR}`,
     description: `Check out ${
       user.name || username
-    }'s GitHub contributions and coding stats for 2024. ${user.bio || ""}`,
+    }'s GitHub contributions and coding stats for ${YEAR}. ${user.bio || ""}`,
     openGraph: {
-      title: `${user.name || username}'s GitHub Wrapped 2024`,
+      title: `${user.name || username}'s GitHub Wrapped ${YEAR}`,
       description: `Check out ${
         user.name || username
-      }'s GitHub contributions and coding stats for 2024`,
+      }'s GitHub contributions and coding stats for ${YEAR}`,
       images: [
         {
           url: `/api/${username}/og`,
           width: 1200,
           height: 630,
-          alt: `${user.name || username}'s GitHub Wrapped 2024`,
+          alt: `${user.name || username}'s GitHub Wrapped ${YEAR}`,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${user.name || username}'s GitHub Wrapped 2024`,
+      title: `${user.name || username}'s GitHub Wrapped ${YEAR}`,
       description: `Check out ${
         user.name || username
-      }'s GitHub contributions and coding stats for 2024`,
+      }'s GitHub contributions and coding stats for ${YEAR}`,
       images: [`/api/${username}/og`],
     },
   };
@@ -104,7 +105,7 @@ function ContributionGraph({
       className={`bg-black/50 backdrop-blur-sm border border-white/[0.08] rounded-lg p-3 md:p-6 overflow-x-auto ${className}`}
     >
       <h2 className="text-lg md:text-xl font-semibold mb-4">
-        Contribution Graph (2024)
+        Contribution Graph ({YEAR})
       </h2>
       <div className="flex flex-col gap-2">
         <div className="grid grid-cols-[repeat(53,1fr)] gap-[1px] md:gap-1 min-w-[600px] md:min-w-0">
@@ -195,7 +196,7 @@ export default async function GitHubWrapped({
           {/* Contribution Stats */}
           <div className="bg-black/50 backdrop-blur-sm border border-white/[0.08] rounded-lg p-6">
             <h2 className="text-lg md:text-xl font-semibold mb-4">
-              Contributions (2024)
+              Contributions ({YEAR})
             </h2>
             <div className="space-y-4">
               <div className="flex justify-between">

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Github } from "lucide-react";
+import { YEAR } from "@/lib/constants";
 
 export default function AboutPage() {
   return (
@@ -25,7 +26,7 @@ export default function AboutPage() {
             </h2>
             <p className="text-white/80">
               GitHub Wrapped provides developers with beautiful, shareable
-              insights into their coding journey throughout 2024. See your
+              insights into their coding journey throughout {YEAR}. See your
               contributions, most active repositories, favorite languages, and
               more - all in one place.
             </p>

@@ -2,6 +2,7 @@
 
 import { useUmami } from "@/lib/umami";
 import { useCallback } from "react";
+import { YEAR } from "@/lib/constants";
 
 export default function SocialShare({ username }: { username: string }) {
   const op = useUmami();
@@ -9,7 +10,7 @@ export default function SocialShare({ username }: { username: string }) {
   const handleShare = useCallback(() => {
     op.track("share_on_x", { location: "wrapped_page", username });
     window.open(
-      `https://x.com/intent/tweet?text=Check out my GitHub Wrapped for 2024! %23GitHubWrapped&url=https://githubwrapped.xyz/${username}`,
+      `https://x.com/intent/tweet?text=Check out my GitHub Wrapped for ${YEAR}! %23GitHubWrapped&url=https://githubwrapped.xyz/${username}`,
       "_blank"
     );
   }, [op, username]);
