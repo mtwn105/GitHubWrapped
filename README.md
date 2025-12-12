@@ -1,59 +1,45 @@
-# GitHub Wrapped 2024
+# GitHub Wrapped 2025
 
-Your personalized year in review for GitHub contributions and coding activity. View your GitHub stats, contributions, and coding journey for 2024 in a beautiful, shareable format.
+Your personalized year in review for GitHub contributions and coding activity. View your GitHub stats, contributions, and coding journey for 2025 in a beautiful, shareable format.
 
-![GitHub Wrapped 2024](https://githubwrapped.xyz/github-wrapped-og.png)
+![GitHub Wrapped 2025](https://githubwrapped.xyz/github-wrapped-og.png)
 
 ## Live Demo - [Click here](https://githubwrapped.xyz)
 
 ## Features
 
-- 📊 Comprehensive GitHub statistics for 2024
-- 📈 Contribution patterns visualization
+- 📊 Comprehensive GitHub statistics visualization
+- 📈 Contribution patterns and calendar heatmap
 - 🔤 Most used programming languages
 - 🌟 Top repositories showcase
-- 📊 Contribution breakdown analysis
-- 🎯 Weekend activity tracking
-- 📱 Social sharing capabilities
-- 🖼️ Shareable OG images
+- 🤖 AI-powered year analysis and fun roasting
+- 📱 Social sharing with dynamic OG images
+- 💾 Download stats as image
 
 ## Tech Stack
 
-### Frontend
-
-- Next.js 14
-- TypeScript
-- Tailwind CSS
-- Shadcn UI Components
-- Umami for analytics
-- Server Actions for API calls
-
-### Backend
-
-- Spring Boot 3.3
-- Java 21
-- MongoDB
-- GitHub API Integration
-- Resilience4j for circuit breaking
-- Maven for dependency management
+- **Framework**: Next.js 14 (TypeScript)
+- **Database**: MongoDB
+- **Styling**: Tailwind CSS + Shadcn UI
+- **APIs**: GitHub GraphQL & REST, OpenRouter AI
+- **Analytics**: Umami
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (Latest LTS version)
-- Java 21
+- Node.js 18+
 - MongoDB
-- GitHub API Token
-- pnpm (recommended) or npm
+- GitHub Personal Access Token
+- OpenRouter API Key (for AI feature)
 
-### Frontend Setup
+### Setup
 
 1. Clone the repository
 
 ```bash
 git clone https://github.com/mtwn105/GitHubWrapped.git
-cd frontend
+cd GitHubWrapped/frontend
 ```
 
 2. Install dependencies
@@ -64,136 +50,109 @@ pnpm install
 
 3. Set up environment variables
 
+Create a `.env.local` file in the `frontend` directory:
+
 ```bash
-# Create .env.local file
-BACKEND_URL=http://localhost:9009
-BACKEND_AUTH_TOKEN=your_auth_token
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+# MongoDB
+MONGODB_URI=mongodb://localhost:27017/githubwrapped
+
+# GitHub
+GITHUB_TOKEN=your_github_token
+
+# OpenRouter AI
+OPENROUTER_API_KEY=your_openrouter_key
+
+# Umami Analytics (optional)
 NEXT_PUBLIC_UMAMI_URL=https://your-umami-instance.com
-NEXT_PUBLIC_UMAMI_WEBSITE_ID=your_umami_website_id
+NEXT_PUBLIC_UMAMI_WEBSITE_ID=your_website_id
+
+# App URL
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-4. Run development server
+4. Run the development server
 
 ```bash
 pnpm dev
 ```
 
-The frontend will be available at `http://localhost:3000`
+The application will be available at `http://localhost:3000`
 
-### Backend Setup
+### Getting API Keys
 
-1. Navigate to backend directory
+**GitHub Token:**
 
-```bash
-cd backend
-```
+- Go to GitHub Settings → Developer settings → Personal access tokens
+- Generate token with `repo`, `read:user`, `user:email` scopes
 
-2. Configure application.yml
+**OpenRouter (for AI):**
 
-```yaml
-server:
-  port: 9009
-
-spring:
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/githubwrapped
-
-auth:
-  token: your_auth_token
-
-github:
-  graphql:
-    url: https://api.github.com/graphql
-  username: your_github_username
-  token: your_github_token
-```
-
-3. Run the application
-
-```bash
-./mvnw spring-boot:run
-```
-
-The backend will be available at `http://localhost:9009`
+- Sign up at [OpenRouter](https://openrouter.ai/)
+- Get API key from dashboard
 
 ## Project Structure
 
 ```
-project-root/
-├── frontend/
-│   ├── app/
-│   │   ├── actions/
-│   │   ├── components/
-│   │   └── [username]/
-│   ├── components/
-│   ├── types/
-│   └── public/
-└── backend/
-    ├── src/
-    │   ├── main/
-    │   │   ├── java/
-    │   │   └── resources/
-    │   └── test/
-    └── pom.xml
+frontend/
+├── app/
+│   ├── [username]/         # User profile pages
+│   ├── about/              # About page
+│   ├── actions/            # Server actions
+│   ├── api/                # API routes
+│   │   ├── [username]/og/  # OG image generation
+│   │   ├── ai/             # AI analysis
+│   │   └── stats/          # Stats endpoints
+│   └── page.tsx            # Home page
+├── components/             # UI components
+├── lib/
+│   ├── models/             # MongoDB models
+│   ├── services/           # Business logic
+│   ├── github.ts           # GitHub API
+│   └── mongodb.ts          # DB connection
+└── types/                  # TypeScript types
 ```
 
 ## API Endpoints
 
-### Stats
-
-```
-GET /api/stats/{username} - Get user's GitHub stats
-POST /api/stats/{username} - Generate user's GitHub stats
-GET /api/stats/top - Get top GitHub users
-GET /api/stats/all - Get all GitHub users
-```
-
-### Health
-
-```
-GET /api/health - Check API health status
-```
+- `GET /api/stats/[username]` - Get user stats
+- `POST /api/stats/[username]` - Generate user stats
+- `GET /api/stats/top` - Top 6 users
+- `GET /api/stats/all` - All users
+- `POST /api/ai` - AI analysis
+- `GET /api/[username]/og` - OG image
 
 ## Deployment
 
-### Frontend
+### Vercel (Recommended)
 
-The application is optimized for deployment on Vercel:
+1. Import your repository to Vercel
+2. Set `frontend` as root directory
+3. Add environment variables:
+   ```
+   MONGODB_URI=your_mongodb_uri
+   GITHUB_TOKEN=your_github_token
+   OPENROUTER_API_KEY=your_openrouter_key
+   NEXT_PUBLIC_UMAMI_URL=your_umami_url
+   NEXT_PUBLIC_UMAMI_WEBSITE_ID=your_umami_id
+   NEXT_PUBLIC_APP_URL=https://your-domain.com
+   ```
+4. Deploy
 
-1. Connect your GitHub repository to Vercel
-2. Configure environment variables
-3. Deploy with `vercel deploy`
+### MongoDB Atlas
 
-### Backend
-
-The backend includes Fly.io configuration:
-
-1. Install Fly.io CLI
-2. Configure secrets:
-
-```bash
-flyctl secrets set MONGODB_URI=your_mongodb_uri
-flyctl secrets set AUTH_TOKEN=your_auth_token
-flyctl secrets set GITHUB_TOKEN=your_github_token
-```
-
-3. Deploy:
-
-```bash
-flyctl deploy
-```
+1. Create cluster at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+2. Create database user
+3. Whitelist IPs (`0.0.0.0/0` for Vercel)
+4. Add connection string to Vercel env vars
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Feel free to submit a Pull Request.
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+2. Create feature branch
+3. Commit your changes
+4. Push and open a PR
 
 ## License
 
@@ -208,5 +167,6 @@ Created by [Amit Wani](https://github.com/mtwn105)
 
 ## Acknowledgments
 
-- Built with [Next.js](https://nextjs.org/) and [Spring Boot](https://spring.io/projects/spring-boot)
+- Built with [Next.js](https://nextjs.org/)
 - UI components from [shadcn/ui](https://ui.shadcn.com/)
+- Analytics by [Umami](https://umami.is/)

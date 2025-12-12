@@ -3,9 +3,9 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Footer from "@/components/footer";
 import { ToasterProvider } from "@/components/ui/toaster";
-import { CSPostHogProvider } from "./posthog";
 import DonateButton from "@/components/donate-button";
 import Script from "next/script";
+import { YEAR } from "@/lib/constants";
 
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
@@ -16,11 +16,10 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL("https://githubwrapped.xyz"),
   title: {
-    default: "GitHub Wrapped 2024",
+    default: `GitHub Wrapped ${YEAR}`,
     template: "%s | GitHub Wrapped",
   },
-  description:
-    "Your Year in Code 2024 - View your GitHub contributions, stats, and coding journey for 2024.",
+  description: `Your Year in Code ${YEAR} - View your GitHub contributions, stats, and coding journey for ${YEAR}.`,
   keywords: [
     "github",
     "developer",
@@ -28,14 +27,14 @@ export const metadata: Metadata = {
     "contributions",
     "stats",
     "wrapped",
-    "2024",
+    YEAR,
   ],
   authors: [{ name: "Amit Wani" }],
   creator: "Amit Wani",
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "GitHub Wrapped 2024",
+    siteName: `GitHub Wrapped ${YEAR}`,
     images: [
       {
         url: "https://githubwrapped.xyz/github-wrapped-og.png",
@@ -89,15 +88,13 @@ export default function RootLayout({
           />
         )}
       </head>
-      <CSPostHogProvider>
-        <body className={`${geistMono.className} antialiased`}>
-          <ToasterProvider>
-            {children}
-            <DonateButton />
-            <Footer />
-          </ToasterProvider>
-        </body>
-      </CSPostHogProvider>
+      <body className={`${geistMono.className} antialiased`}>
+        <ToasterProvider>
+          {children}
+          <DonateButton />
+          <Footer />
+        </ToasterProvider>
+      </body>
     </html>
   );
 }

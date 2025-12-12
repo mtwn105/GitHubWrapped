@@ -10,6 +10,7 @@ import { getTopUsers } from "./actions/top-user-action";
 import Image from "next/image";
 import { useUmami } from "@/lib/umami";
 import Link from "next/link";
+import { YEAR } from "@/lib/constants";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -80,7 +81,7 @@ export default function Home() {
   const handleShareOnX = useCallback(() => {
     op.track("share_on_x", { location: "home" });
     window.open(
-      "https://twitter.com/intent/tweet?text=Create your GitHub Wrapped for 2024!%20%23GitHubWrapped&url=https://githubwrapped.xyz",
+      `https://twitter.com/intent/tweet?text=Create your GitHub Wrapped for ${YEAR}!%20%23GitHubWrapped&url=https://githubwrapped.xyz`,
       "_blank"
     );
   }, [op]);
@@ -98,7 +99,7 @@ export default function Home() {
           GitHub Wrapped
         </p>
         <p className="text-lg sm:text-xl md:text-2xl mt-4 text-white font-normal inter-var text-center">
-          Your Year in Code 2024
+          Your Year in Code {YEAR}
         </p>
         <div className="flex flex-col items-center justify-center w-full">
           <input
@@ -134,7 +135,7 @@ export default function Home() {
             <img
               data-track="producet_hunt_click"
               src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=725764&theme=light"
-              alt="GitHub Wrapped 2024 – Your Year in Code - Your GitHub journey with a personalized year in code | Product Hunt"
+              alt={`GitHub Wrapped ${YEAR} – Your Year in Code - Your GitHub journey with a personalized year in code | Product Hunt`}
               style={{
                 width: "250px",
                 height: "54px",

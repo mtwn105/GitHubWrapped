@@ -1,4 +1,5 @@
 import { Octokit } from "@octokit/rest";
+import { YEAR_START, YEAR_END } from "./constants";
 
 // Lazy initialization - only create when needed
 let octokit: Octokit | null = null;
@@ -228,7 +229,7 @@ export async function getRepositoryStats(username: string): Promise<RepositoryNo
                 commits: defaultBranchRef {
                   target {
                     ... on Commit {
-                      history(since: "2024-01-01T00:00:00Z", until: "2024-12-31T23:59:59Z") {
+                      history(since: "${YEAR_START}", until: "${YEAR_END}") {
                         totalCount
                       }
                     }
@@ -276,8 +277,8 @@ export async function getContributionStats(username: string) {
     query {
       user(login: "${username}") {
         contributionsCollection(
-          from: "2024-01-01T00:00:00Z"
-          to: "2024-12-31T23:59:59Z"
+          from: "${YEAR_START}"
+          to: "${YEAR_END}"
         ) {
           commits: totalCommitContributions
           issuesClosed: totalIssueContributions

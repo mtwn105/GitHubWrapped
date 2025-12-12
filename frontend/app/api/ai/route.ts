@@ -1,6 +1,7 @@
 import { Data } from '@/types/stats';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { streamText } from 'ai';
+import { YEAR } from '@/lib/constants';
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY!,
@@ -15,7 +16,7 @@ export async function POST(req: Request) {
   const monthlyContributions = Array(12)
     .fill(0)
     .map((_, index) => {
-      const month = new Date(2024, index).toLocaleString("default", {
+      const month = new Date(parseInt(YEAR), index).toLocaleString("default", {
         month: "short",
       });
       let total = 0;
@@ -33,7 +34,7 @@ export async function POST(req: Request) {
   const dailyContributions = Array(7)
     .fill(0)
     .map((_, index) => {
-      const day = new Date(2024, 0, index + 1).toLocaleString("default", {
+      const day = new Date(parseInt(YEAR), 0, index + 1).toLocaleString("default", {
         weekday: "short",
       });
       let total = 0;
@@ -148,10 +149,10 @@ Give output in below markdown format:
 
 **Roast the user:**
 
-GitHub Stats for ${request.username} in last year 2024: ${JSON.stringify(request)}`,
+GitHub Stats for ${request.username} in last year ${YEAR}: ${JSON.stringify(request)}`,
     headers: {
       'HTTP-Referer': 'https://githubwrapped.xyz',
-      'X-Title': 'GitHub Wrapped 2024 - Your Year in Code',
+      'X-Title': `GitHub Wrapped ${YEAR} - Your Year in Code`,
     },
     temperature: 1,
     maxTokens: 1024
