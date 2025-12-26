@@ -66,3 +66,4 @@ const User: Model<IGitHubUser> =
   mongoose.models.User || mongoose.model<IGitHubUser>("User", UserSchema);
 
 export default User;
+

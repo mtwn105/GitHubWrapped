@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 import ContributionBreakdown from "@/components/contribution-breakdown";
 import ProfileHeader from "@/components/profile-header";
@@ -22,6 +23,9 @@ import { YEAR } from "@/lib/constants";
 import { UmamiIdentify } from "@/components/umami-identify";
 import AIAnalysis from "@/components/ai-analysis";
 
+// Reserved routes that should not be treated as usernames
+const RESERVED_ROUTES = ["support", "about", "api"];
+
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
@@ -30,6 +34,12 @@ export async function generateMetadata({
   params: { username: string };
 }): Promise<Metadata> {
   const username = params.username;
+
+  // Skip metadata generation for reserved routes
+  if (RESERVED_ROUTES.includes(username.toLowerCase())) {
+    return {};
+  }
+
   const stats = await getStats(username);
 
   if (!stats?.data) {
@@ -141,6 +151,12 @@ export default async function GitHubWrapped({
   params: { username: string };
 }) {
   const { username } = params;
+
+  // Redirect reserved routes to their proper pages
+  if (RESERVED_ROUTES.includes(username.toLowerCase())) {
+    redirect(`/${username.toLowerCase()}`);
+  }
+
   const stats = await getStats(username);
 
   if (!stats?.data) {

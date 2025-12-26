@@ -115,3 +115,4 @@ const Stats: Model<IGitHubStats> =
   mongoose.models.Stats || mongoose.model<IGitHubStats>("Stats", StatsSchema);
 
 export default Stats;
+

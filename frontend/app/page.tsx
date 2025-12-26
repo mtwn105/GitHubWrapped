@@ -11,6 +11,7 @@ import Image from "next/image";
 import { useUmami } from "@/lib/umami";
 import Link from "next/link";
 import { YEAR } from "@/lib/constants";
+import { Heart, Server, Sparkles } from "lucide-react";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -129,12 +130,12 @@ export default function Home() {
         </div>
         <div className="mt-4 flex justify-center">
           <Link
-            href="https://www.producthunt.com/posts/github-wrapped-2024-your-year-in-code?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-github&#0045;wrapped&#0045;2024&#0045;your&#0045;year&#0045;in&#0045;code"
+            href="https://www.producthunt.com/products/github-wrapped-2024-your-year-in-code?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-github-wrapped-2025"
             target="_blank"
           >
             <img
               data-track="producet_hunt_click"
-              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=725764&theme=light"
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1054554&amp;theme=light&amp;t=1766718539168"
               alt={`GitHub Wrapped ${YEAR} – Your Year in Code - Your GitHub journey with a personalized year in code | Product Hunt`}
               style={{
                 width: "250px",
@@ -197,6 +198,56 @@ export default function Home() {
           </button>
         </div>
       </WavyBackground>
+
+      {/* Support Section */}
+      <div className="w-full mt-16 px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-indigo-500/10 border border-white/10 p-8 md:p-12">
+            {/* Background glow effect */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-pink-500/20 to-purple-500/20 blur-3xl rounded-full -translate-y-1/2 translate-x-1/2" />
+
+            <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+              <div className="flex-shrink-0">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/25">
+                  <Heart className="w-10 h-10 text-white" />
+                </div>
+              </div>
+
+              <div className="flex-1 text-center md:text-left">
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                  Help Keep GitHub Wrapped Free
+                </h2>
+                <p className="text-white/60 mb-4 max-w-xl">
+                  Running this service costs money for servers, API calls, and
+                  development time. Your support helps us keep GitHub Wrapped
+                  free and available for everyone!
+                </p>
+                <div className="flex flex-wrap gap-4 justify-center md:justify-start text-sm text-white/50">
+                  <span className="flex items-center gap-1.5">
+                    <Server className="w-4 h-4" />
+                    Hosting costs
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4" />
+                    New features
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex-shrink-0">
+                <Link
+                  href="/support"
+                  data-track="support_cta_click"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-full shadow-lg shadow-purple-500/25 transition-all duration-300 hover:scale-105 hover:shadow-purple-500/40"
+                >
+                  <Heart className="w-5 h-5" />
+                  Support Us
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {topUsers.length > 0 && (
         <div id="top-profiles" className="text-center w-full mt-12">
