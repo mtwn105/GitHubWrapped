@@ -3,9 +3,62 @@ import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { streamText } from 'ai';
 import { YEAR } from '@/lib/constants';
 
+// AI Configuration from environment variables
+const AI_MODEL_ID = process.env.AI_MODEL_ID || 'mistralai/mistral-7b-instruct';
+const AI_TEMPERATURE = parseFloat(process.env.AI_TEMPERATURE || '0.9');
+const AI_MAX_TOKENS = parseInt(process.env.AI_MAX_TOKENS || '1200', 10);
+
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY!,
 });
+
+// Enhanced system prompt for better, more personalized responses
+const SYSTEM_PROMPT = `You are GitHubWrapped AI — a witty, insightful, and slightly sassy code companion who creates personalized year-in-review summaries. You have a talent for finding humor in coding patterns and turning dry statistics into entertaining narratives.
+
+Your personality:
+- Clever and punny (you love a good code joke)
+- Supportive but not afraid to roast gently
+- You notice the small details that make each developer unique
+- You speak like a friend who happens to know a lot about their coding habits
+
+Guidelines:
+- Reference SPECIFIC data points from the user's stats (exact numbers, languages, repos)
+- Make observations that feel personal, not generic
+- Use emojis strategically for emphasis, not spam (2-4 per section max)
+- Keep each section punchy: 2-3 sentences max
+- Be playful but never mean-spirited in roasts
+- Write in English only`;
+
+const getUserPrompt = (username: string, stats: string) => `
+Analyze this GitHub developer's ${YEAR} activity and create a personalized GitHubWrapped summary.
+
+Generate these sections (2-3 sentences each, be specific to their data):
+
+**🎯 Your Year in Code:**
+Summarize their coding journey. Mention specific numbers (commits, contributions, active days). Make it feel like a personal highlight reel.
+
+**⚡ Code Superpower:**
+Assign a creative superpower title based on their standout pattern (e.g., "The Weekend Warrior" if high weekend activity, "The Streak Master" for long streaks, "Polyglot Programmer" for diverse languages). Explain why they earned it.
+
+**🔮 Commit Horoscope:**
+Create a fun prediction based on their patterns. Reference their contribution rhythm (daily patterns, monthly trends). Give one actionable piece of advice for next year.
+
+**🏆 Week of Glory:**
+Find their most productive period. Celebrate it with specific details about what made it special.
+
+**😴 The Drought:**
+Playfully acknowledge their longest break. Be funny but understanding — we all need rest! Reference the actual gap length.
+
+**🦊 Spirit Animal:**
+Assign a coding spirit animal that matches their style. Consider: consistency, burst patterns, language preferences, weekend vs weekday activity. Make the connection clever.
+
+**🔥 The Roast:**
+One killer roast that's funny but not cruel. Reference something specific about their stats that's roast-worthy. Make them laugh at themselves.
+
+GitHub Profile: ${username}
+Year: ${YEAR}
+Stats: ${stats}`;
+
 export async function POST(req: Request) {
   const data: Data = await req.json();
   const { user, stats } = data;
@@ -119,43 +172,18 @@ export async function POST(req: Request) {
   };
 
   console.log("Request to AI:", request);
+  console.log("Using AI Model:", AI_MODEL_ID);
 
   const result = await streamText({
-    model: openrouter.chat('mistralai/mistral-7b-instruct'),
-    prompt: `You are a creative assistant tasked with generating a fun and engaging GitHubWrapped summary for a user based on their GitHub activity. The user's data includes stats like total commits, contributions calendar, repositories, and more. Based on this, generate the following brief and concise sections (each no longer than 2-3 sentences):
-
-    0. Your Year in Code: Write a short summary of the user's year in code.
-1. Code Superpower of the Year: Assign a fun superpower title based on the user's standout activity and briefly explain why.
-2. Commit Horoscope: Create a GitHub-themed horoscope reflecting the user's contribution patterns, with one key piece of advice for next year.
-3. The Week of Wonders: Identify the user's most active week and celebrate it in 1-2 sentences.
-4. The Lazy Coder’s Award: Humorously highlight a period of inactivity in 1-2 sentences.
-5. Open Source Spirit Animal: Assign a spirit animal based on the user's coding style and explain the connection in one sentence.
-6. Roast the user: Roast the user so hard that they will never forget this year.
-
-Use a lighthearted, creative, and engaging tone. Heavy use of emojis. Keep the output concise and avoid unnecessary details. Use English language only.
-
-Give output in below markdown format:
-
-**Your Year in Code:**
-**Code Superpower of the Year:**
-
-**Commit Horoscope:**
-
-**The Week of Wonders:**
-
-**The Lazy Coder’s Award:**
-
-**Open Source Spirit Animal:**
-
-**Roast the user:**
-
-GitHub Stats for ${request.username} in last year ${YEAR}: ${JSON.stringify(request)}`,
+    model: openrouter.chat(AI_MODEL_ID),
+    system: SYSTEM_PROMPT,
+    prompt: getUserPrompt(request.username || 'Developer', JSON.stringify(request)),
     headers: {
       'HTTP-Referer': 'https://githubwrapped.xyz',
       'X-Title': `GitHub Wrapped ${YEAR} - Your Year in Code`,
     },
-    temperature: 1,
-    maxTokens: 1024
+    temperature: AI_TEMPERATURE,
+    maxTokens: AI_MAX_TOKENS,
   });
 
   // console.log("Results from AI:", text);
