@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { User } from "@/types/stats";
 import { Users, UserPlus, BookMarked } from "lucide-react";
 import { useUmami } from "@/lib/umami";
@@ -40,12 +39,15 @@ export default function ProfileHeader({
         className="bg-black/50 backdrop-blur-sm border border-white/[0.08] rounded-lg p-4 md:p-6 mb-6 md:mb-8 hover:scale-105 transition-all duration-300 hover:cursor-pointer hover:bg-white/10"
       >
         <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={user.avatarUrl}
             alt={user.username || ""}
             width={96}
             height={96}
             className="rounded-full md:w-[120px] md:h-[120px]"
+            crossOrigin="anonymous"
+            data-avatar="true"
           />
           <div className="text-center md:text-left w-full">
             <h1 className="text-2xl md:text-4xl font-bold mb-2">

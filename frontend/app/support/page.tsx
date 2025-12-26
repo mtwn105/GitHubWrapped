@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -17,28 +17,42 @@ import { Supporter } from "@/types/supporter";
 
 const DODO_CHECKOUT_URL = "https://dodo.pe/gw-donation";
 
-export default function SupportPage() {
+// Separate component that uses useSearchParams
+function PaymentSuccessHandler({
+  onSuccess,
+}: {
+  onSuccess: (paymentId: string | null) => void;
+}) {
+  const searchParams = useSearchParams();
+  const op = useUmami();
+
+  useEffect(() => {
+    const paymentId = searchParams.get("payment_id");
+    const status = searchParams.get("status");
+
+    if (paymentId || status === "succeeded" || status === "success") {
+      onSuccess(paymentId);
+      op.track("donation_success", { payment_id: paymentId });
+
+      // Clear URL params without page reload
+      window.history.replaceState({}, "", "/support");
+    }
+  }, [searchParams, op, onSuccess]);
+
+  return null;
+}
+
+function SupportPageContent() {
   const [supporters, setSupporters] = useState<Supporter[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
   const op = useUmami();
-  const searchParams = useSearchParams();
 
-  // Check if redirected after successful payment
-  useEffect(() => {
-    const paymentId = searchParams.get("payment_id");
-    const status = searchParams.get("status");
-
-    if (paymentId || status === "succeeded" || status === "success") {
-      setShowSuccessBanner(true);
-      op.track("donation_success", { payment_id: paymentId });
-
-      // Clear URL params without page reload
-      window.history.replaceState({}, "", "/support");
-    }
-  }, [searchParams, op]);
+  const handlePaymentSuccess = useCallback(() => {
+    setShowSuccessBanner(true);
+  }, []);
 
   useEffect(() => {
     async function fetchSupporters() {
@@ -82,6 +96,11 @@ export default function SupportPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      {/* Payment Success Handler - wrapped in Suspense */}
+      <Suspense fallback={null}>
+        <PaymentSuccessHandler onSuccess={handlePaymentSuccess} />
+      </Suspense>
+
       {/* Success Banner */}
       {showSuccessBanner && (
         <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-b border-green-500/30">
@@ -270,4 +289,8 @@ export default function SupportPage() {
       </section>
     </div>
   );
+}
+
+export default function SupportPage() {
+  return <SupportPageContent />;
 }
