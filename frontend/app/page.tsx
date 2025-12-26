@@ -129,12 +129,12 @@ export default function Home() {
         </div>
         <div className="mt-4 flex justify-center">
           <Link
-            href="https://www.producthunt.com/posts/github-wrapped-2024-your-year-in-code?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-github&#0045;wrapped&#0045;2024&#0045;your&#0045;year&#0045;in&#0045;code"
+            href="https://www.producthunt.com/products/github-wrapped-2024-your-year-in-code?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-github-wrapped-2025"
             target="_blank"
           >
             <img
               data-track="producet_hunt_click"
-              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=725764&theme=light"
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1054554&amp;theme=light&amp;t=1766718539168"
               alt={`GitHub Wrapped ${YEAR} – Your Year in Code - Your GitHub journey with a personalized year in code | Product Hunt`}
               style={{
                 width: "250px",
