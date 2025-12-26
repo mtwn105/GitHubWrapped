@@ -364,3 +364,4 @@ export function calculateTotals(repositories: RepositoryNode[]) {
     { totalStars: 0, totalForks: 0 }
   );
 }
+

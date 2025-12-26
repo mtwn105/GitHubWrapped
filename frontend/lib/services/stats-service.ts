@@ -246,3 +246,4 @@ export async function getAllUsers(): Promise<AllUserDTO[]> {
 
   return users.map((user) => ({ username: user.username }));
 }
+
